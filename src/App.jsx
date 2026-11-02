@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { seed, stages, chances, money, short, initials, fmtDate } from "./data";
 import { Icon, Button, Avatar, Badge, Empty, StatCard, Menu, Modal, Field, RevenueChart } from "./components";
@@ -33,7 +33,7 @@ function App() {
     }
   });
   const [page, setPage] = useState(() => resolve(location.hash.slice(1)));
-  const [query, setQuery] = useState(""), [mine, setMine] = useState(false), [modal, setModal] = useState(null), [note, setNote] = useState(null), [menu, setMenu] = useState(false), [notifications, setNotifications] = useState(false), [activeMessage, setActiveMessage] = useState(1), [reply, setReply] = useState(""), [month, setMonth] = useState(new Date(2026, 10, 1)), [period, setPeriod] = useState("6 months"), [taskFilter, setTaskFilter] = useState("All"), [invoiceFilter, setInvoiceFilter] = useState("All"), [celebrate, setCelebrate] = useState(false);
+  const [query, setQuery] = useState(""), [mine, setMine] = useState(false), [modal, setModal] = useState(null), [note, setNote] = useState(null), [menu, setMenu] = useState(false), [notifications, setNotifications] = useState(false), [activeMessage, setActiveMessage] = useState(1), [reply, setReply] = useState(""), [month, setMonth] = useState(new Date(2026, 10, 1)), [period, setPeriod] = useState("6 months"), [taskFilter, setTaskFilter] = useState("All"), [invoiceFilter, setInvoiceFilter] = useState("All"), [celebrate, setCelebrate] = useState(false), [entering, setEntering] = useState(true);
   const search = useRef(), bell = useRef(), bellWrap = useRef();
   const setToast = (text, opts) => setNote(text ? { text, tone: "success", ...opts, id: Date.now() } : null);
   useEffect(() => {
@@ -49,6 +49,11 @@ function App() {
       return () => clearTimeout(timer);
     }
   }, [note]);
+  useLayoutEffect(() => {
+    setEntering(true);
+    const timer = setTimeout(() => setEntering(false), 2e3);
+    return () => clearTimeout(timer);
+  }, [page]);
   useEffect(() => {
     const fn = (e) => {
       if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey || !search.current || document.querySelector("dialog[open]") || e.target.closest?.("input, textarea, select, [contenteditable]")) return;
@@ -233,7 +238,7 @@ function App() {
     update("messages", data.messages.map((m) => ({ ...m, unread: false })));
     setToast("All notifications marked as read");
   }}>Mark all as read</button></div>}</div><button className="round-btn profile-btn" aria-label="Your profile" onClick={() => go("Profile")}>{initials(data.settings.name)}</button></div></header>
- <div className="content">
+ <div className={"content" + (entering ? " entering" : "")}>
  {page === "Deals" && <>{pageHead("Track every opportunity from first contact to won.", <><div className="segmented" role="group" aria-label="Deal owner"><button className={!mine ? "selected" : ""} aria-pressed={!mine} onClick={() => setMine(false)}>All deals</button><button className={mine ? "selected" : ""} aria-pressed={mine} onClick={() => setMine(true)}>My deals</button></div>{newBtn("deal", "New deal")}</>)}{stats}<div className="board-caption"><span><span className="live-dot" /> {deals.length} deals in your pipeline</span><span>Drag cards between stages <span className="desktop-only">· Win a deal to celebrate</span></span></div>{board}</>}
  {page === "Dashboard" && <>{pageHead("Pipeline, revenue, and your next steps at a glance.", <Button icon="calendar" onClick={() => go("Calendar")}>November 2026</Button>)}{stats}<div className="grid-2"><section className="panel"><div className="panel-head"><div><h3>Revenue overview</h3><p>Sample historical revenue · USD</p></div><select aria-label="Revenue period" value={period} onChange={(e) => setPeriod(e.target.value)}><option>6 months</option><option>3 months</option></select></div><RevenueChart period={period} /></section><section className="panel"><div className="panel-head"><div><h3>Your next steps</h3><p>Small steps. Meaningful progress.</p></div><Badge>{data.tasks.filter((t) => !t.done).length} open</Badge></div>{data.tasks.filter(match).slice(0, 4).map((t) => <label className={"task-row " + (t.done ? "done" : "")} key={t.id}><input type="checkbox" checked={t.done} onChange={() => patch("tasks", t.id, { done: !t.done })} /><span>{t.title}<small>{fmtDate(t.date)}</small></span></label>)}<Button kind="subtle" onClick={() => go("Tasks")}>View all tasks →</Button></section></div><section className="panel"><div className="panel-head"><div><h3>Deals in motion</h3><p>Your most valuable open opportunities</p></div><Button kind="subtle" onClick={() => go("Deals")}>View pipeline →</Button></div><div className="table-wrap"><table><thead><tr><th>Opportunity</th><th>Company</th><th>Value</th><th>Stage</th><th>Owner</th></tr></thead><tbody>{[...deals].filter((d) => d.stage < 4).sort((a, b) => b.value - a.value).slice(0, 4).map((d) => <tr key={d.id}><td><button className="text-btn" onClick={() => setModal({ type: "deal", record: d })}>{d.title}</button></td><td>{d.company}</td><td>{money(d.value)}</td><td><Badge>{stages[d.stage]}</Badge></td><td><Avatar text={d.owner} small /></td></tr>)}</tbody></table></div></section></>}
  {page === "Contacts" && <>{pageHead("Everyone you work with, with their company and role.", <><Button icon="download" onClick={() => exportCSV(data.contacts.filter(match), "contacts")}>Export</Button>{newBtn("contact", "Add contact")}</>)}<div className="contact-grid">{data.contacts.filter(match).map((c, i) => <article className="panel contact-card" key={c.id}><div className="contact-edit"><Menu label={"Actions for " + c.name} items={[["Edit contact", "edit", () => setModal({ type: "contact", record: c })], ["Send email", "mail", () => location.href = "mailto:" + c.email], ["Delete", "trash", () => remove("contacts", c, "contact"), true]]} /></div><Avatar text={initials(c.name)} tone={i % 4} /><h3>{c.name}</h3><p>{c.role}</p><Badge>{c.company}</Badge><a href={"mailto:" + c.email}>{c.email}</a><Button onClick={() => setModal({ type: "contact", record: c })}>View contact</Button></article>)}</div>{!data.contacts.filter(match).length && <Empty />}</>}

@@ -4,6 +4,12 @@ Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengiku
 
 ## [Belum dirilis]
 
+### Ditambahkan
+
+- Animasi masuk "clay pop" pada konten setiap kali halaman dibuka. Kartu statistik, panel, dan kolom kanban naik sambil membesar dengan pantulan kecil. Ikon kartu statistik memantul. Baris tabel, task, timeline, pesan, dan kartu deal bergeser dari kiri. Batang grafik tumbuh dari bawah dan progress bar terisi dari kiri. Elemen muncul berurutan dari atas ke bawah, dan seluruh animasi selesai dalam kurang dari 2 detik. Sidebar dan topbar tidak dianimasikan.
+- Jeda berurutan hanya berlaku selama 2 detik setelah pindah halaman. Elemen yang muncul sesudahnya, misalnya record baru, kartu yang dipindah, atau hasil Undo, langsung muncul dengan pop tanpa jeda.
+- Token gerak `--ease-out` dan `--ease-spring` di `src/styles.css`. Animasi otomatis mati bila pengguna mengaktifkan pengaturan "kurangi gerakan" (`prefers-reduced-motion`).
+
 ### Diubah
 
 - Warna aksen kini mengubah seluruh warna yang berkaitan, bukan hanya tombol dan sidebar. Rose, sage, dan navy masing-masing punya palet lengkap untuk mode terang dan gelap: latar belakang, permukaan (blush untuk violet dan rose, ivory untuk sage, linen untuk navy), teks, badge netral, batang grafik, kartu statistik dan ikonnya, chip kalender, avatar, bayangan, backdrop modal, dan confetti. Palet violet tidak berubah.
