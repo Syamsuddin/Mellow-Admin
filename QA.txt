@@ -1,0 +1,20 @@
+VALIDASI MELLOW ADMIN 1.0.0
+
+Berhasil:
+- Build production React dengan esbuild.
+- Navigasi dan render seluruh 10 halaman di Chromium.
+- Tambah deal USD 5.000 dan penyesuaian total pipeline.
+- Pindah tahap melalui select, termasuk Won.
+- Filter pencarian dan pemuatan ulang dengan data tersimpan.
+- Edit dialog, konfirmasi hapus, dan penghapusan data uji.
+- Layout iframe viewport 390 px (area isi 375 px setelah scrollbar).
+- Lebar body sama dengan scrollWidth pada viewport seluler.
+- Navigasi dock seluler dan perubahan tahap di viewport seluler.
+- Toggle dark mode dan kembali ke light mode.
+- Validasi angka seed dan pemeriksaan integritas ZIP.
+
+Batas pemeriksaan:
+- Tidak diuji pada perangkat fisik Android/iOS atau peramban Safari/Firefox.
+- Drag-and-drop menggunakan native HTML5. Pemindahan tahap melalui select diuji.
+- Tidak ada backend, email nyata, atau pembayaran eksternal untuk diuji.
+- Grafik historis adalah ilustrasi, bukan hasil agregasi dari invoice.
