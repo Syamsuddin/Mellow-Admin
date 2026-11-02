@@ -14,10 +14,10 @@ Cukup ekstrak lalu buka `index.html`. Tidak perlu `npm install`, server, atau ko
 
 ## Kenapa Mellow?
 
-- **Tampil beda sejak layar pertama.** Bayangan neumorphic, sentuhan kaca, dan 4 aksen warna memberi identitas visual yang jarang ada di template admin.
+- **Tampil beda sejak layar pertama.** Bayangan neumorphic, sentuhan kaca, animasi masuk yang membal lembut, dan 4 palet aksen lengkap memberi identitas visual yang jarang ada di template admin.
 - **Langsung jalan, bahkan offline.** React, CSS, ikon, dan font Nunito Sans sudah dibundel lokal. Tanpa CDN, font eksternal, atau panggilan API.
 - **Ada versi satu file.** `Mellow-Admin-Standalone.html` (±370 KB) memuat seluruh aplikasi dalam satu berkas HTML. Praktis untuk demo ke klien atau lampiran presentasi.
-- **Ringan.** Bundle JavaScript, termasuk React, ±83 KB setelah gzip. CSS ±43 KB gzip, sudah termasuk font yang tertanam.
+- **Ringan.** Bundle JavaScript, termasuk React, ±81 KB setelah gzip. CSS ±43 KB gzip, sudah termasuk font yang tertanam.
 - **Kode yang mudah dibaca.** Hanya lima berkas sumber, React murni tanpa router, state library, atau framework CSS. Satu orang bisa memahami seluruh alurnya dalam satu sore.
 - **Siap disambungkan ke backend.** Semua perubahan data lewat beberapa fungsi pusat, jadi mengganti `localStorage` dengan API Laravel, Node, atau backend lain cukup di satu tempat.
 
@@ -65,11 +65,12 @@ Ditambah **7 layar mandiri** tanpa sidebar: Sign in, Sign up, Forgot password, L
 
 ### Tampilan dan tema
 
-- **4 aksen warna:** violet, rose, sage, dan navy.
+- **4 palet aksen:** violet, rose, sage, dan navy. Aksen mengubah seluruh nuansa, bukan hanya tombol dan sidebar: latar, permukaan kartu, teks, grafik, kartu statistik, avatar, bayangan, backdrop dialog, dan konfeti. Tiap aksen punya versi terang dan gelap.
+- **Animasi masuk *clay pop*.** Setiap kali halaman dibuka, konten muncul berurutan dari atas ke bawah. Kartu dan panel naik dengan pantulan kecil, ikon statistik memantul, baris tabel dan kartu deal bergeser masuk, batang grafik tumbuh, dan progress bar terisi. Semuanya selesai dalam kurang dari 2 detik. Sidebar dan bilah atas tetap diam. Record yang ditambahkan, dipindah, atau dikembalikan dengan *Undo* langsung muncul tanpa menunggu giliran.
 - **Mode gelap** dan **mode kartu ringkas**, masing-masing bisa dinyalakan dari Settings.
 - **Sidebar menempel** saat halaman digulir, dengan grup menu yang bisa dilipat.
 - **Responsif penuh.** Sidebar berubah menjadi ikon di tablet, dan di ponsel menjadi menu geser dengan dock navigasi di bawah. Kanban bisa digulir menyamping di layar kecil.
-- **Token desain berbasis CSS variable** untuk tipografi, spasi, radius, warna semantik, dan bayangan, sehingga mengganti warna merek cukup di satu tempat.
+- **Token desain berbasis CSS variable** untuk tipografi, spasi, radius, warna semantik, bayangan, dan kurva animasi, sehingga mengganti warna merek cukup di satu tempat.
 
 ### Aksesibilitas dan detail kecil
 
@@ -78,7 +79,7 @@ Ditambah **7 layar mandiri** tanpa sidebar: Sign in, Sign up, Forgot password, L
 - Menu aksi ••• bisa dipakai dengan keyboard (panah, Home, End, Escape).
 - Label `aria` pada tombol ikon, grafik, dan kontrol tahap.
 - Ada alternatif keyboard untuk drag-and-drop.
-- Menghormati `prefers-reduced-motion`.
+- Menghormati `prefers-reduced-motion`: bila pengguna memilih mengurangi gerakan di sistem operasinya, semua animasi dan transisi dimatikan.
 - Gaya cetak khusus untuk invoice.
 
 ---
@@ -115,7 +116,7 @@ src/
   pages.jsx        Halaman tambahan dan layar mandiri (login, error, maintenance)
   components.jsx   Komponen UI: Icon, Button, Menu, Modal, Field, StatCard, RevenueChart, ...
   data.js          Data contoh, paket harga, FAQ, dan format angka
-  styles.css       Token desain, tema, breakpoint, dan gaya cetak
+  styles.css       Token desain, tema, animasi, breakpoint, dan gaya cetak
 assets/            Hasil build (jangan diedit langsung)
 dist/              Paket siap unggah ke hosting
 build.mjs          Skrip build esbuild dan pembuat versi standalone
@@ -131,6 +132,7 @@ CHANGELOG.md       Riwayat perubahan per versi
 |---|---|
 | Mengganti warna merek | Ubah token di `:root` pada `src/styles.css`: warna merek (`--accent*`, `--primary-a/b`, `--sidebar-a/b`), latar (`--bg-*`), permukaan dan teks, `--shade`, grafik (`--bar*`), kartu statistik pertama (`--stat-1*`), dan avatar pertama (`--tone-0*`). Pastikan teks putih di tombol dan sidebar tetap berkontras minimal 4,5:1 |
 | Menambah aksen warna | Tambahkan nama aksen ke daftar swatch di halaman Settings (`App.jsx`) dan buat `.swatch.nama` di CSS. Lalu salin blok `[data-accent=rose]` dan `[data-theme=dark][data-accent=rose]` sebagai contoh, dan ganti semua nilainya |
+| Mengatur animasi masuk | Ubah durasi atau kurva pada aturan `enter-*` dan token `--ease-out`/`--ease-spring` di `src/styles.css`. Animasi hanya berlaku pada elemen yang tercantum di daftar selektornya, jadi jenis kartu atau baris baru perlu ditambahkan ke daftar itu agar ikut beranimasi |
 | Memakai Rupiah | Ubah helper `money` dan `short` di `src/data.js`, lalu sesuaikan nilai data contoh |
 | Menambah halaman | Tambahkan entri ke array `nav` (label, ikon, kelompok), lalu render komponennya di `App.jsx` |
 | Mengganti data contoh | Edit `seed` di `src/data.js`, build ulang, lalu klik **Settings → Reset demo data** |
