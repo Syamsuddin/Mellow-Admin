@@ -129,8 +129,8 @@ CHANGELOG.md       Riwayat perubahan per versi
 
 | Ingin… | Caranya |
 |---|---|
-| Mengganti warna merek | Ubah `--accent`, `--accent-deep`, `--accent-light`, `--primary-a/b`, dan `--sidebar-a/b` di `:root` pada `src/styles.css`. Pastikan teks putih di tombol dan sidebar tetap berkontras minimal 4,5:1 |
-| Menambah aksen warna | Tambahkan nama aksen ke daftar swatch di halaman Settings (`App.jsx`), lalu buat aturan `[data-accent=nama]` di CSS |
+| Mengganti warna merek | Ubah token di `:root` pada `src/styles.css`: warna merek (`--accent*`, `--primary-a/b`, `--sidebar-a/b`), latar (`--bg-*`), permukaan dan teks, `--shade`, grafik (`--bar*`), kartu statistik pertama (`--stat-1*`), dan avatar pertama (`--tone-0*`). Pastikan teks putih di tombol dan sidebar tetap berkontras minimal 4,5:1 |
+| Menambah aksen warna | Tambahkan nama aksen ke daftar swatch di halaman Settings (`App.jsx`) dan buat `.swatch.nama` di CSS. Lalu salin blok `[data-accent=rose]` dan `[data-theme=dark][data-accent=rose]` sebagai contoh, dan ganti semua nilainya |
 | Memakai Rupiah | Ubah helper `money` dan `short` di `src/data.js`, lalu sesuaikan nilai data contoh |
 | Menambah halaman | Tambahkan entri ke array `nav` (label, ikon, kelompok), lalu render komponennya di `App.jsx` |
 | Mengganti data contoh | Edit `seed` di `src/data.js`, build ulang, lalu klik **Settings → Reset demo data** |

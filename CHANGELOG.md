@@ -2,6 +2,20 @@
 
 Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/), dan penomoran versinya mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
+## [Belum dirilis]
+
+### Diubah
+
+- Warna aksen kini mengubah seluruh warna yang berkaitan, bukan hanya tombol dan sidebar. Rose, sage, dan navy masing-masing punya palet lengkap untuk mode terang dan gelap: latar belakang, permukaan (blush untuk violet dan rose, ivory untuk sage, linen untuk navy), teks, badge netral, batang grafik, kartu statistik dan ikonnya, chip kalender, avatar, bayangan, backdrop modal, dan confetti. Palet violet tidak berubah.
+- Kartu statistik dan avatar memakai slot warna. Slot pertama mengikuti aksen. Slot pendamping yang terlalu mirip aksen diganti: rose memakai mint dan lavender, sage memakai lavender, dan navy memakai mint dan lavender. `StatCard` kini menerima `tone="s1"`…`"s4"`, bukan nama warna.
+- Swatch di Settings menampilkan gradien sidebar aksen yang sebenarnya, dan warna `theme-color` browser mengikuti aksen.
+- Token baru di `src/styles.css`: `--bg-glow/-a/-b`, `--shade`, `--shade-deep`, `--bar`, `--bar-active`, `--stat-1…4` (dengan `-icon` dan `-fg`), serta `--tone-0…3` (dengan `-fg`). `--stat-lavender/coral/peach/blue` dihapus.
+
+### Diperbaiki
+
+- Di mode gelap, sidebar, latar belakang, dan `--accent-light` selalu ungu, apa pun aksen yang dipilih.
+- Di mode gelap, track switch dalam posisi mati hampir tidak terlihat.
+
 ## [1.1.0] - 2026-11-03
 
 Rilis perbaikan UI/UX hasil audit desain, mencakup keterbacaan, navigasi, design token, keramaian visual, dan petunjuk interaksi. Data demo yang sudah tersimpan di browser tetap terbaca tanpa perlu reset.

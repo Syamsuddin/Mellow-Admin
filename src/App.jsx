@@ -92,6 +92,7 @@ function App() {
   useEffect(() => {
     document.documentElement.dataset.theme = data.settings.dark ? "dark" : "light";
     document.documentElement.dataset.accent = data.settings.accent;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--sidebar-a").trim());
     document.title = page + " | Mellow Admin";
   }, [page, data.settings]);
   function go(p) {
@@ -189,7 +190,7 @@ function App() {
   const open = deals.filter((d) => d.stage !== 4), won = deals.filter((d) => d.stage === 4);
   const sum = (xs) => xs.reduce((a, d) => a + d.value, 0);
   const unread = data.messages.filter((m) => m.unread).length;
-  const stats = <div className="stats"><StatCard tone="lavender" icon="briefcase" value={short(sum(open))} label="Open pipeline" note={open.length + " open deal" + (open.length === 1 ? "" : "s")} onClick={() => go("Deals")} /><StatCard tone="coral" icon="target" value={short(open.reduce((a, d) => a + d.value * chances[d.stage] / 100, 0))} label="Weighted forecast" note="By stage probability" onClick={() => go("Reports")} /><StatCard tone="peach" icon="trophy" value={short(sum(won))} label="Won deals" note={won.length + " closed"} onClick={() => go("Reports")} /><StatCard tone="blue" icon="chart" value={short(deals.length ? sum(deals) / deals.length : 0)} label="Average deal size" note={"Across " + deals.length + " deal" + (deals.length === 1 ? "" : "s")} onClick={() => go("Reports")} /></div>;
+  const stats = <div className="stats"><StatCard tone="s1" icon="briefcase" value={short(sum(open))} label="Open pipeline" note={open.length + " open deal" + (open.length === 1 ? "" : "s")} onClick={() => go("Deals")} /><StatCard tone="s2" icon="target" value={short(open.reduce((a, d) => a + d.value * chances[d.stage] / 100, 0))} label="Weighted forecast" note="By stage probability" onClick={() => go("Reports")} /><StatCard tone="s3" icon="trophy" value={short(sum(won))} label="Won deals" note={won.length + " closed"} onClick={() => go("Reports")} /><StatCard tone="s4" icon="chart" value={short(deals.length ? sum(deals) / deals.length : 0)} label="Average deal size" note={"Across " + deals.length + " deal" + (deals.length === 1 ? "" : "s")} onClick={() => go("Reports")} /></div>;
   const newBtn = (type, label) => <Button kind="primary" icon="plus" onClick={() => setModal({ type })}>{label}</Button>;
   const pageHead = (sub, actions) => <div className="page-head"><p>{sub}</p>{actions && <div className="actions">{actions}</div>}</div>;
   const board = <div className="board">{stages.map((s, i) => {
@@ -296,7 +297,7 @@ function App() {
     setToast("Invoice marked as paid");
   }}>Mark as paid</Button>}</div></Modal>}
  {toastEl}
- {celebrate && <div className="confetti" aria-hidden="true">{Array.from({ length: 38 }, (_, i) => <i key={i} style={{ left: i * 37 % 100 + "%", animationDelay: i % 7 * 0.08 + "s", background: ["#a38ad9", "#ed9ba7", "#e9c66d", "#8bc3ac"][i % 4] }} />)}</div>}
+ {celebrate && <div className="confetti" aria-hidden="true">{Array.from({ length: 38 }, (_, i) => <i key={i} style={{ left: i * 37 % 100 + "%", animationDelay: i % 7 * 0.08 + "s", background: "var(--stat-" + (i % 4 + 1) + "-icon)" }} />)}</div>}
  </div>;
 }
 createRoot(document.getElementById("root")).render(<App />);
