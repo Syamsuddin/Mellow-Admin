@@ -16,7 +16,27 @@ Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengiku
   - heatmap keterlibatan tim per hari dengan rata-rata per hari kerja (contoh);
   - tugas dengan cincin progres, aktivitas terbaru, tabel deal dengan batang probabilitas, dan kesehatan proyek dengan cincin progres.
 - Panel yang memakai data live mengikuti kotak filter di topbar. Grafik dan heatmap bisa dipakai dengan keyboard: fokus, lalu tombol panah.
-- Komponen baru di `src/components.jsx`: `TrendChart`, `Gauge`, `Ring`, `SegmentBar`, dan `Heatmap`. `StatCard` menerima prop opsional `trend` dan `delta`.
+- Semua halaman lain kini memakai tata letak penuh: kartu statistik di atas, lalu grid 12 kolom berisi panel utama dan panel insight di sisinya.
+  - Reports: grafik pendapatan 3M/6M/12M, tabel laporan pipeline, deal per prioritas, perkiraan closing per minggu, nilai per pemilik, dan klien teratas.
+  - Activity: timeline, rekap per jenis dan per orang, serta heatmap keterlibatan.
+  - Contacts: kartu kontak dengan ringkasan deal akunnya, tabel akun, akun teratas, dan daftar akun yang belum punya kontak (tombol Add mengisi nama perusahaan).
+  - Deals: tabel "Closing soon" dan komposisi pipeline per tahap di bawah papan kanban.
+  - Inbox: filter All/Unread dan kolom ketiga berisi kartu kontak pengirim, deal terkait, dan status percakapan.
+  - Calendar: tugas dan tanggal closing deal ikut tampil di kalender, plus ringkasan bulan dan agenda.
+  - Tasks: daftar dikelompokkan Overdue/Today/Upcoming/Completed, tautan ke deal terkait, cincin progres, dan beban 7 hari ke depan.
+  - Products: meter stok, nilai stok, komposisi katalog, peringatan restok dengan tombol +50, produk teratas, dan titik harga.
+  - Orders: status fulfilment, pendapatan harian, metode pembayaran, dan pelanggan teratas.
+  - Invoices: kartu tagihan/tertagih/outstanding/overdue, jatuh tempo relatif, tombol Remind, komposisi koleksi, aging, dan klien.
+  - Projects: timeline pengiriman bergaya Gantt, status portofolio, dan beban kerja anggota.
+  - Files: statistik penyimpanan, komposisi per tipe file, dan kontributor.
+  - Team: pipeline dan proyek per anggota, masa kerja, status tim, dan peran.
+  - Profile: pipeline pribadi, gauge target pribadi, tabel deal, heatmap, dan proyek.
+  - Billing: cincin pemakaian, ringkasan biaya, dan grafik pengeluaran.
+  - Settings: tata letak dua kolom, pratinjau profil, notifikasi, jumlah record per koleksi, unduh cadangan JSON, dan daftar pintasan keyboard.
+  - Help: empat tautan cepat, pintasan keyboard, dan status workspace.
+  - Components: etalase semua komponen, termasuk grafik.
+  - Pages: thumbnail tiruan tiap layar.
+- Komponen baru di `src/components.jsx`: `TrendChart`, `Gauge`, `Ring`, `SegmentBar`, `Heatmap`, `Columns`, `BarList`, dan `Breakdown`. `RevenueChart` kini menerima `months` dan `values`. `StatCard` menerima prop opsional `trend` dan `delta`.
 - Data contoh baru di `src/data.js`: `revenue`, `trends`, `engagement`, dan `quarterTarget`.
 - Token `--series` (warna seri grafik; `--accent` di mode terang, `--accent-deep` di mode gelap) serta `--fill-success`, `--fill-warning`, dan `--fill-danger` untuk isian status pada grafik. Ketiganya sudah diperiksa terhadap buta warna di kedua mode.
 - Animasi masuk "clay pop" pada konten setiap kali halaman dibuka. Kartu statistik, panel, dan kolom kanban naik sambil membesar dengan pantulan kecil. Ikon kartu statistik memantul. Baris tabel, task, timeline, pesan, dan kartu deal bergeser dari kiri. Batang grafik tumbuh dari bawah dan progress bar terisi dari kiri. Elemen muncul berurutan dari atas ke bawah, dan seluruh animasi selesai dalam kurang dari 2 detik. Sidebar dan topbar tidak dianimasikan.

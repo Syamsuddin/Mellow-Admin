@@ -93,8 +93,19 @@ function Ring({ value, size = 64, stroke = 6, tone = "k-accent", label, children
 function SegmentBar({ parts, label }) {
   return <div className="segment-bar" role="img" aria-label={label}>{parts.filter((p) => p.value > 0).map((p) => <span key={p.label} className={p.tone} style={{ flexGrow: p.value }} />)}</div>;
 }
+function Columns({ items, format = (v) => v, label, highlight, all = false, height }) {
+  const max = Math.max(1e-9, ...items.map((c) => c.value)), hi = highlight ?? items.findIndex((c) => c.value === max);
+  return <div className="columns" style={height ? { height } : null} role="img" aria-label={label + ": " + items.map((c) => c.label + " " + format(c.value)).join(", ")}>{items.map((c, i) => <span key={c.label} className={(i === hi ? "busy " : "") + (c.tone || "")} title={c.label + ": " + format(c.value)}><b>{all || i === hi ? format(c.value) : ""}</b><em><i style={{ height: c.value / max * 100 + "%" }} /></em><small>{c.label}</small></span>)}</div>;
+}
+function BarList({ items, format = (v) => v, label }) {
+  const max = Math.max(1e-9, ...items.map((i) => i.value));
+  return <ul className="bar-list" aria-label={label}>{items.map((i) => <li key={i.key || i.label} className={i.tone || "k-accent"}>{i.lead}<span className="bar-name"><b>{i.label}</b>{i.sub && <small>{i.sub}</small>}</span><strong>{format(i.value)}</strong><span className="bar-track"><i style={{ width: i.value / max * 100 + "%" }} /></span></li>)}</ul>;
+}
+function Breakdown({ parts, format = (v) => v, label }) {
+  return <><SegmentBar parts={parts} label={label + ": " + parts.map((p) => p.label + " " + format(p.value)).join(", ")} /><ul className="legend-list">{parts.map((p) => <li className={p.tone} key={p.label}><i /><span>{p.label}{p.sub && <small>{p.sub}</small>}</span><b>{format(p.value)}</b></li>)}</ul></>;
+}
 const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-function Heatmap({ days, unit = "events" }) {
+function Heatmap({ days, unit = "events", weekdayBars = true }) {
   const [ref, width] = useWidth(), [at, setAt] = React.useState(null);
   const all = days.length / 7, weeks = Math.max(8, Math.min(all, Math.floor((width - 40) / 22))), cells = days.slice((all - weeks) * 7);
   const max = Math.max(1, ...days.map((d) => d.value || 0)), last = cells.map((d) => d.value != null).lastIndexOf(true);
@@ -116,7 +127,7 @@ function Heatmap({ days, unit = "events" }) {
   return <div className="heatmap-wrap"><div ref={ref} className="heatmap" style={{ gridTemplateColumns: "28px repeat(" + weeks + ", minmax(0, 1fr))" }} tabIndex="0" role="img" aria-label={total.toLocaleString("en-US") + " " + unit + " in the last " + weeks + " weeks. Busiest weekday: " + weekdays[busy] + ". Peak: " + peak.value + " on " + day(peak, { month: "long", day: "numeric" }) + "."} onKeyDown={keys} onFocus={() => setAt(last)} onBlur={() => setAt(null)} onPointerMove={(e) => e.target.dataset.i && setAt(Number(e.target.dataset.i))} onPointerLeave={() => setAt(null)}>{width > 0 && <><span />{["Mon", "", "Wed", "", "Fri", "", ""].map((d, i) => <span key={i}>{d}</span>)}{Array.from({ length: weeks }, (_, w) => {
     const first = cells[w * 7], prev = cells[w * 7 - 7], month = !prev ? Number(first.date.slice(8)) <= 10 : first.date.slice(5, 7) !== prev.date.slice(5, 7);
     return <React.Fragment key={first.date}><span>{month ? day(first, { month: "short" }) : ""}</span>{cells.slice(w * 7, w * 7 + 7).map((d, n) => <i key={d.date} data-i={d.value == null ? void 0 : w * 7 + n} style={{ "--w": w }} className={"hm " + (d.value == null ? "none" : "l" + (d.value ? Math.ceil(d.value / max * 4) : 0)) + (at === w * 7 + n ? " active" : "")} />)}</React.Fragment>;
-  })}</>}</div>{at != null && width > 0 && <div className="chart-tip above" style={{ left: Math.min(Math.max(28 + 4 + Math.floor(at / 7) * (cw + 4) + cw / 2, 64), width - 64), top: 24 + at % 7 * (cw + 4) - 6 }}><b>{cells[at].value} {unit}</b><small>{day(cells[at], { weekday: "short", month: "short", day: "numeric" })}</small></div>}<div className="heatmap-foot"><span><b>{total.toLocaleString("en-US")}</b> {unit} in the last {weeks} weeks · busiest on {weekdays[busy]}s</span><span className="scale" aria-hidden="true">Less{[0, 1, 2, 3, 4].map((l) => <i key={l} className={"hm l" + l} />)}More</span></div><div className="weekday-bars" role="img" aria-label={"Daily average by weekday: " + weekdays.map((d, i) => d + " " + avg[i]).join(", ")}>{avg.map((v, i) => <span key={i} className={i === busy ? "busy" : ""} title={weekdays[i] + ": " + v + " on average"}><b>{i === busy ? v + " avg" : ""}</b><em><i style={{ height: v / Math.max(...avg, 1) * 100 + "%" }} /></em><small>{weekdays[i].slice(0, 3)}</small></span>)}</div></div>;
+  })}</>}</div>{at != null && width > 0 && <div className="chart-tip above" style={{ left: Math.min(Math.max(28 + 4 + Math.floor(at / 7) * (cw + 4) + cw / 2, 64), width - 64), top: 24 + at % 7 * (cw + 4) - 6 }}><b>{cells[at].value} {unit}</b><small>{day(cells[at], { weekday: "short", month: "short", day: "numeric" })}</small></div>}<div className="heatmap-foot"><span><b>{total.toLocaleString("en-US")}</b> {unit} in the last {weeks} weeks · busiest on {weekdays[busy]}s</span><span className="scale" aria-hidden="true">Less{[0, 1, 2, 3, 4].map((l) => <i key={l} className={"hm l" + l} />)}More</span></div>{weekdayBars && <Columns label="Daily average by weekday" items={avg.map((v, i) => ({ label: weekdays[i].slice(0, 3), value: v }))} format={(v) => v + " avg"} highlight={busy} />}</div>;
 }
 function Menu({ label, items }) {
   const [box, setBox] = React.useState(null), btn = React.useRef(), list = React.useRef();
@@ -178,15 +189,17 @@ function Modal({ title, onClose, children }) {
 function Field({ label, children, ...props }) {
   return <label className="field"><span>{label}</span>{children || <input {...props} />}</label>;
 }
-function RevenueChart({ period = "6 months" }) {
-  const values = period === "3 months" ? [58, 74, 101] : [32, 48, 43, 58, 74, 101];
-  const months = period === "3 months" ? ["Sep", "Oct", "Nov"] : ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov"];
-  return <div className="revenue-chart" role="img" aria-label={"Sample monthly revenue in thousands of dollars: " + months.map((m, i) => m + " " + values[i]).join(", ")}><div className="chart-y"><span>$120K</span><span>$80K</span><span>$40K</span><span>$0</span></div><div className="bars">{values.map((n, i) => <div className="bar-group" key={i}><div className="bar-track"><div className={"bar " + (i === values.length - 1 ? "active" : "")} style={{ height: n / 120 * 100 + "%" }} tabIndex="0"><span>${n}K</span></div></div><small>{months[i]}</small></div>)}</div></div>;
+function RevenueChart({ months, values }) {
+  const max = Math.max(1, ...values), step = [10, 20, 25, 40, 50, 100, 200, 250, 500].find((n) => n * 3 >= max) || Math.ceil(max / 300) * 100, top = step * 3;
+  return <div className="revenue-chart" role="img" aria-label={"Monthly revenue in thousands of dollars: " + months.map((m, i) => m + " " + values[i]).join(", ")}><div className="chart-y">{[3, 2, 1, 0].map((n) => <span key={n}>{n ? "$" + step * n + "K" : "$0"}</span>)}</div><div className="bars">{values.map((n, i) => <div className="bar-group" key={i}><div className="bar-track"><div className={"bar " + (i === values.length - 1 ? "active" : "")} style={{ height: n / top * 100 + "%" }} tabIndex="0" aria-label={months[i] + " $" + n + "K"}><span>${n}K</span></div></div><small>{months[i]}</small></div>)}</div></div>;
 }
 export {
   Avatar,
   Badge,
+  BarList,
+  Breakdown,
   Button,
+  Columns,
   Empty,
   Field,
   Icon,
@@ -197,6 +210,7 @@ export {
   RevenueChart,
   Ring,
   SegmentBar,
+  Sparkline,
   StatCard,
   TrendChart
 };
