@@ -2,6 +2,14 @@
 
 Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/), dan penomoran versinya mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
+## [Unreleased]
+
+### Diubah
+
+- Pengguna demo kini **Cut Rahma** (inisial CR, `cut.rahma@example.com`), menggantikan Mia Taylor (MT). Deal, file, proyek, dan aktivitas milik MT pindah ke CR, termasuk filter My deals.
+- Avatar pengguna di sidebar, tombol profil di topbar, halaman Profile, kartu pratinjau Settings, dan lock screen kini memakai foto profil (`src/photos/cut-rahma.webp`, 240 × 240 px) alih-alih inisial.
+- Data demo yang sudah tersimpan di browser masih memakai nama lama sampai Settings → Reset demo data.
+
 ## [1.2.0] - 2026-11-03
 
 Rilis fitur: dua varian dashboard (Analytics dan eCommerce), kelompok menu Forms dengan tujuh halaman, Dashboard dan semua halaman lain dengan tata letak penuh, layar mandiri yang lebih kaya, palet lengkap per warna aksen, dan animasi masuk. Totalnya 36 layar. Data demo yang sudah tersimpan di browser tetap terbaca tanpa perlu reset, tetapi data contoh baru untuk koleksi yang sudah tersimpan, misalnya kontak keenam, baru muncul setelah Settings → Reset demo data.
@@ -146,5 +154,6 @@ Rilis perbaikan UI/UX hasil audit desain, mencakup keterbacaan, navigasi, design
 
 Rilis awal: template dashboard CRM React 19 bergaya clay & glass, dengan 20 halaman, 7 layar mandiri, data demo di `localStorage`, tema gelap, empat warna aksen, ekspor CSV, dan versi standalone satu file.
 
+[Unreleased]: https://github.com/Syamsuddin/theme-mellow/compare/v1.2.0...HEAD
 [1.2.0]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.1.0

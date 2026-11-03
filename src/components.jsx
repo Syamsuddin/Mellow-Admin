@@ -7,7 +7,7 @@ function Icon({ name, size = 20 }) {
 function Button({ children, icon, kind = "", ...props }) {
   return <button className={"btn " + kind} {...props}>{icon && <Icon name={icon} size={17} />} {children}</button>;
 }
-function Avatar({ text = "MT", tone = 0, small = false, photo }) {
+function Avatar({ text = "CR", tone = 0, small = false, photo }) {
   return <span className={"avatar tone-" + tone + (small ? " small" : "") + (photo ? " photo" : "")}>{photo ? <img src={photo} alt="" /> : text}</span>;
 }
 function Badge({ children, tone = "" }) {

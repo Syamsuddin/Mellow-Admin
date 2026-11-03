@@ -22,7 +22,8 @@ src/pages.jsx                  Semua halaman lain dan layar mandiri (login, erro
 src/forms.jsx                  Tujuh halaman kelompok Forms
 src/data.js                    Data contoh, tahap, dan format angka
 src/styles.css                 Desain, breakpoint, tema, dan cetak
-src/photos/                    Foto kontak contoh (fiktif, dibuat dengan AI)
+src/photos/                    Foto kontak contoh (fiktif, dibuat dengan AI) dan
+                               foto profil pengguna (cut-rahma.webp)
 build.mjs                      Build sumber React dan versi standalone
 package.json                   Dependensi terkunci versinya
 package-lock.json              Lockfile untuk npm ci
