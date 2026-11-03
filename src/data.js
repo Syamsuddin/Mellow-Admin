@@ -45,6 +45,40 @@ const engagement = Array.from({ length: 364 }, (_, i) => {
   const r = Math.abs(Math.sin(i * 12.9898 + 4.1) * 43758.5453) % 1;
   return { date, value: date > "2026-11-03" ? null : Math.round((i % 7 < 5 ? 3 + r * 12 : r * 4) * (0.75 + i / 728)) };
 });
+const wave = (i, s) => Math.abs(Math.sin(i * 12.9898 + s) * 43758.5453) % 1;
+const sampleDays = (n, f) => Array.from({ length: n }, (_, i) => {
+  const d = new Date(2026, 10, 4 - n + i);
+  return { date: d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"), ...f(i, d.getDay() % 6 === 0) };
+});
+const sold = { 1: 520, 2: 240, 3: 14, 4: 310, 5: 38, 6: 22 };
+const storeRaw = sampleDays(180, (i, weekend) => ({ sales: (0.8 + i / 400) * (weekend ? 0.8 : 1.05) * (0.85 + wave(i, 1.7) * 0.3) }));
+const storeScale = seed.products.reduce((a, p) => a + p.price * (sold[p.id] || 0), 0) / storeRaw.slice(-30).reduce((a, d) => a + d.sales, 0);
+const store = {
+  sold,
+  goal: 1e5,
+  days: storeRaw.map((d, i) => {
+    const sales = Math.round(d.sales * storeScale), orders = Math.max(1, Math.round(sales / (108 + wave(i, 3.1) * 24)));
+    return { date: d.date, sales, orders, sessions: Math.round(orders / (0.027 + wave(i, 5.3) * 0.01)) };
+  }),
+  funnel: [["Viewed a product", 0.48], ["Added to cart", 0.141], ["Reached checkout", 0.054]],
+  regions: [["United States", "US", 0.36, 0.33, 6], ["Indonesia", "ID", 0.18, 0.22, 14], ["Germany", "DE", 0.14, 0.13, -3], ["United Kingdom", "GB", 0.12, 0.12, 4], ["Australia", "AU", 0.08, 0.07, 9], ["Rest of world", "", 0.12, 0.13, 2]].map(([name, code, sales, orders, change]) => ({ name, code, sales, orders, change }))
+};
+const traffic = {
+  days: sampleDays(180, (i, weekend) => {
+    const visitors = Math.round((620 + i * 2.4) * (weekend ? 0.7 : 1.06) * (0.86 + wave(i, 2.3) * 0.28));
+    return { visitors, views: Math.round(visitors * (2.3 + wave(i, 4.1) * 0.7)), signups: Math.round(visitors * (0.019 + wave(i, 6.2) * 0.011)), duration: Math.round(170 + i * 0.12 + wave(i, 7.7) * 60) };
+  }),
+  channels: [["Organic search", 0.41, 2.6], ["Direct", 0.24, 3.1], ["Social", 0.15, 1.2], ["Referral", 0.11, 2.4], ["Email & other", 0.09, 4.3]].map(([name, share, rate]) => ({ name, share, rate })),
+  devices: [["Desktop", 0.56, 228, 36], ["Mobile", 0.37, 141, 51], ["Tablet", 0.07, 176, 44]].map(([name, share, time, bounce]) => ({ name, share, time, bounce })),
+  hours: [0.18, 0.08, 0.1, 0.42, 0.88, 1, 0.94, 0.86, 0.7, 0.52, 0.4, 0.28],
+  pages: [["/", "Home", 0.28, 41, 48], ["/pricing", "Pricing", 0.16, 28, 95], ["/features/pipeline", "Pipeline feature tour", 0.12, 33, 124], ["/blog/clay-and-glass-ui", "Blog: Designing clay and glass UI", 0.1, 62, 212], ["/sign-up", "Sign up", 0.08, 19, 71], ["/docs/getting-started", "Docs: Getting started", 0.07, 24, 256]].map(([path, title, share, bounce, time]) => ({ path, title, share, bounce, time })),
+  countries: [["United States", "US", 0.34], ["Indonesia", "ID", 0.16], ["India", "IN", 0.11], ["Germany", "DE", 0.09], ["United Kingdom", "GB", 0.08]].map(([name, code, share]) => ({ name, code, share })),
+  campaigns: [["Autumn launch", "Paid search", 4820, 162, 3900], ["Product Hunt feature", "Referral", 2980, 96, 0], ["LinkedIn retargeting", "Social", 3310, 74, 2650], ["Clay UI webinar", "Email", 2140, 118, 600], ["Partner newsletter", "Referral", 1260, 51, 0]].map(([name, channel, clicks, signups, spend]) => ({ name, channel, clicks, signups, spend })),
+  live: [["/pricing", 0.3], ["/", 0.24], ["/features/pipeline", 0.16], ["/sign-up", 0.11]],
+  returning: 0.38,
+  frequency: [["1 visit", 62], ["2", 17], ["3–5", 13], ["6+", 8]],
+  bounce: 42
+};
 const money = (n) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
 const short = (n) => Math.abs(n) < 1e3 ? money(n) : "$" + (n / 1e3).toLocaleString("en-US", { maximumFractionDigits: 1 }) + "K";
 const initials = (name) => name.split(/\s+/).map((s) => s[0]).slice(0, 2).join("").toUpperCase();
@@ -65,5 +99,7 @@ export {
   seed,
   short,
   stages,
+  store,
+  traffic,
   trends
 };

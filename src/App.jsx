@@ -2,14 +2,14 @@ import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { seed, stages, chances, money, short, initials, fmtDate, trends } from "./data";
 import { Icon, Button, Avatar, Badge, StatCard, Menu, Modal, Field } from "./components";
-import { Dashboard, Reports, Contacts, DealInsights, Inbox, Calendar, Tasks, Invoices, Products, Orders, Projects, Files, Team, Activity, Profile, Billing, Settings, Help, Components, Pages, Screen, screens } from "./pages";
+import { Dashboard, Analytics, Ecommerce, Reports, Contacts, DealInsights, Inbox, Calendar, Tasks, Invoices, Products, Orders, Projects, Files, Team, Activity, Profile, Billing, Settings, Help, Components, Pages, Screen, screens } from "./pages";
 import "./styles.css";
-const nav = [["Dashboard", "home", "Overview"], ["Reports", "chart", "Overview"], ["Activity", "activity", "Overview"], ["Contacts", "contact", "CRM"], ["Deals", "briefcase", "CRM"], ["Inbox", "message", "CRM"], ["Calendar", "calendar", "CRM"], ["Tasks", "check", "CRM"], ["Products", "box", "Commerce"], ["Orders", "cart", "Commerce"], ["Invoices", "file", "Commerce"], ["Projects", "layers", "Workspace"], ["Files", "folder", "Workspace"], ["Team", "people", "Workspace"], ["Profile", "user", "Account"], ["Billing", "card", "Account"], ["Settings", "settings", "Account"], ["Help", "help", "Account"], ["Components", "grid", "UI kit"], ["Pages", "lock", "UI kit"]];
+const nav = [["Dashboard", "home", "Overview"], ["Analytics", "globe", "Overview"], ["eCommerce", "bag", "Overview"], ["Reports", "chart", "Overview"], ["Activity", "activity", "Overview"], ["Contacts", "contact", "CRM"], ["Deals", "briefcase", "CRM"], ["Inbox", "message", "CRM"], ["Calendar", "calendar", "CRM"], ["Tasks", "check", "CRM"], ["Products", "box", "Commerce"], ["Orders", "cart", "Commerce"], ["Invoices", "file", "Commerce"], ["Projects", "layers", "Workspace"], ["Files", "folder", "Workspace"], ["Team", "people", "Workspace"], ["Profile", "user", "Account"], ["Billing", "card", "Account"], ["Settings", "settings", "Account"], ["Help", "help", "Account"], ["Components", "grid", "UI kit"], ["Pages", "lock", "UI kit"]];
 const slug = (n) => n.toLowerCase().replace(/\s+/g, "-");
 const routes = [...nav.map(([n]) => n), ...screens.map(([n]) => n)];
 const resolve = (hash) => routes.find((n) => slug(n) === hash) || (hash ? "Error 404" : "Dashboard");
 const groups = [...new Set(nav.map((n) => n[2]))].map((s) => [s, nav.filter((n) => n[2] === s)]);
-const creates = { Dashboard: "deal", Deals: "deal", Reports: "deal", Contacts: "contact", Tasks: "task", Calendar: "event", Products: "product", Projects: "project", Team: "member" };
+const creates = { Dashboard: "deal", eCommerce: "product", Deals: "deal", Reports: "deal", Contacts: "contact", Tasks: "task", Calendar: "event", Products: "product", Projects: "project", Team: "member" };
 function useMedia(query) {
   const [hit, setHit] = useState(() => matchMedia(query).matches);
   useEffect(() => {
@@ -223,7 +223,7 @@ function App() {
     note.undo();
     setNote(null);
   }}>Undo</button>}<button aria-label="Dismiss notification" onClick={() => setNote(null)}><Icon name="close" size={15} /></button></div>}</div>;
-  if (isScreen(page)) return <>{<Screen key={page} name={page} settings={data.settings} go={go} setToast={setToast} />}{toastEl}</>;
+  if (isScreen(page)) return <>{<Screen key={page} name={page} data={data} nav={nav} go={go} setToast={setToast} />}{toastEl}</>;
   return <div className={"shell " + (data.settings.compact ? "compact" : "")}>
  {menu && <button className="mobile-scrim" aria-label="Close navigation" onClick={() => setMenu(false)} />}
  <aside className={"sidebar " + (menu ? "open" : "")}><a href="#dashboard" className="brand" onClick={() => go("Dashboard")}><span className="brand-mark">m</span> mellow<span className="brand-dot">.</span></a><div className="profile"><div className="profile-ring"><Avatar text={initials(data.settings.name)} /><i /></div><div><strong>Hi, {data.settings.name.split(" ")[0]}! <span aria-hidden="true">✋</span></strong><p>Let’s make things happen.</p></div></div><nav aria-label="Main navigation">{groups.map(([section, items]) => {
@@ -244,6 +244,8 @@ function App() {
  <div className={"content" + (entering ? " entering" : "")}>
  {page === "Deals" && <>{pageHead("Track every opportunity from first contact to won.", <><div className="segmented" role="group" aria-label="Deal owner"><button className={!mine ? "selected" : ""} aria-pressed={!mine} onClick={() => setMine(false)}>All deals</button><button className={mine ? "selected" : ""} aria-pressed={mine} onClick={() => setMine(true)}>My deals</button></div>{newBtn("deal", "New deal")}</>)}{stats}<div className="board-caption"><span><span className="live-dot" /> {deals.length} deals in your pipeline</span><span>Drag cards between stages <span className="desktop-only">· Win a deal to celebrate</span></span></div>{board}<DealInsights {...ctx} /></>}
  {page === "Dashboard" && <Dashboard {...ctx} />}
+ {page === "Analytics" && <Analytics {...ctx} />}
+ {page === "eCommerce" && <Ecommerce {...ctx} />}
  {page === "Contacts" && <Contacts {...ctx} />}
  {page === "Inbox" && <Inbox {...ctx} active={activeMessage} setActive={setActiveMessage} />}
  {page === "Invoices" && <Invoices {...ctx} />}

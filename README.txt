@@ -29,12 +29,15 @@ QA.txt                         Cakupan pemeriksaan
 CHANGELOG.md                   Riwayat perubahan per versi
 
 FITUR
-20 halaman dalam sidebar berkelompok:
-Overview: Dashboard, Reports, Activity. CRM: Contacts, Deals, Inbox,
-Calendar, Tasks. Commerce: Products, Orders, Invoices. Workspace: Projects,
-Files, Team. Account: Profile, Billing, Settings, Help. UI kit: Components, Pages.
+22 halaman dalam sidebar berkelompok:
+Overview: Dashboard, Analytics, eCommerce, Reports, Activity. CRM: Contacts,
+Deals, Inbox, Calendar, Tasks. Commerce: Products, Orders, Invoices.
+Workspace: Projects, Files, Team. Account: Profile, Billing, Settings, Help.
+UI kit: Components, Pages.
 7 layar mandiri tanpa sidebar: Sign in, Sign up, Forgot password, Lock screen,
 Error 404, Error 500, Maintenance. URL tak dikenal menampilkan Error 404.
+Tiap layar punya komponen dan animasi sendiri: carousel, meter kekuatan sandi,
+kode 6 digit, jam berjalan, pencarian halaman, status layanan, dan hitung mundur.
 Layar login/daftar hanya tampilan demo, tidak memeriksa atau menyimpan kredensial.
 Clay UI dengan design token: skala tipografi, spasi kelipatan 4 px, empat radius,
 warna semantik, dan tiga tingkat bayangan. Kontras teks lolos WCAG AA.

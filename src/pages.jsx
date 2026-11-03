@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { money, short, fmtDate, initials, photos, plans, receipts, faq, stages, chances, revenue, engagement, quarterTarget } from "./data";
+import React, { useState, useEffect, useRef } from "react";
+import { money, short, fmtDate, initials, photos, plans, receipts, faq, stages, chances, revenue, engagement, quarterTarget, store, traffic } from "./data";
 import { Icon, Button, Avatar, Badge, Empty, StatCard, Menu, Field, TrendChart, Gauge, Ring, SegmentBar, Heatmap, Columns, BarList, Breakdown, RevenueChart, Sparkline } from "./components";
 const today = () => new Date().toISOString().slice(0, 10);
 const statusTone = { Active: "success", Delivered: "success", "On track": "success", Completed: "success", Paid: "success", Shipped: "low", Processing: "low", Invited: "low", Pending: "medium", "At risk": "high", "Out of stock": "high", Cancelled: "high", Overdue: "high", Inactive: "", Archived: "", Viewer: "" };
@@ -17,14 +17,18 @@ const weekOf = (d) => {
   return localDay(x);
 };
 const Panel = ({ title, sub, action, span, className = "", children }) => <section className={"panel" + (span ? " span-" + span : "") + (className ? " " + className : "")}><div className="panel-head"><div><h3>{title}</h3>{sub && <p>{sub}</p>}</div>{action}</div>{children}</section>;
-const Figures = ({ items, className = "" }) => <div className={"figures " + className}>{items.map(([k, v]) => <div key={k}><small>{k}</small><strong>{v}</strong></div>)}</div>;
+const Figures = ({ items, className = "", children }) => <div className={"figures " + className}>{items.map(([k, v]) => <div key={k}><small>{k}</small><strong>{v}</strong></div>)}{children}</div>;
 const Delta = ({ value, note }) => <em className={"delta" + (value < 0 ? " down" : "")}><Icon name="arrow" size={12} />{Math.abs(value)}%{note && <span className="sr-only">{(value < 0 ? " down " : " up ") + note}</span>}</em>;
-const Range = ({ value, onChange }) => <div className="segmented" role="group" aria-label="Revenue period">{[3, 6, 12].map((n) => <button key={n} className={value === n ? "selected" : ""} aria-pressed={value === n} aria-label={"Last " + n + " months"} onClick={() => onChange(n)}>{n}M</button>)}</div>;
+const Range = ({ value, onChange, options = [3, 6, 12], unit = "M", word = "months", label = "Revenue period" }) => <div className="segmented" role="group" aria-label={label}>{options.map((n) => <button key={n} className={value === n ? "selected" : ""} aria-pressed={value === n} aria-label={"Last " + n + " " + word} onClick={() => onChange(n)}>{n}{unit}</button>)}</div>;
 const shortcuts = [["/", "Focus the page filter"], ["Esc", "Clear the filter, close menus and dialogs"], ["Tab", "Move between controls"], ["← →", "Step through chart months and heatmap weeks"], ["↑ ↓", "Move through menu items and heatmap days"], ["Home / End", "Jump to the first or last item"]];
 const ShortcutList = () => <ul className="shortcut-list">{shortcuts.map(([k, v]) => <li key={k}><kbd>{k}</kbd><span>{v}</span></li>)}</ul>;
 const ownerTone = (o) => o === "MT" ? 0 : o === "AB" ? 3 : 2;
 const ringTone = { "On track": "k-success", "At risk": "k-danger", Completed: "k-accent" };
 const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
+const change = (a, b) => b ? Math.round((a / b - 1) * 100) : 0;
+const weeks = (days, f, n = 12) => Array.from({ length: n }, (_, w) => f(days.slice(days.length - (n - w) * 7, days.length - (n - w - 1) * 7)));
+const num = (n) => n >= 1e3 ? (n / 1e3).toLocaleString("en-US", { maximumFractionDigits: 1 }) + "K" : String(Math.round(n));
+const clock = (s) => Math.round(s) < 60 ? Math.round(s) + "s" : Math.floor(Math.round(s) / 60) + "m " + String(Math.round(s) % 60).padStart(2, "0") + "s";
 function Dashboard(ctx) {
   const { data, match, pageHead, setModal, go, patch, deals, kpis } = ctx;
   const [range, setRange] = useState(6);
@@ -55,6 +59,77 @@ function Dashboard(ctx) {
  <section className="panel span-4"><div className="panel-head"><div><h3>Recent activity</h3><p>Latest changes in this workspace</p></div><Button kind="subtle" onClick={() => go("Activity")}>View all →</Button></div>{activity.length ? <ol className="timeline">{activity.map((a) => <li key={a.id}><span className="timeline-icon"><Icon name={kindIcon[a.kind] || "activity"} size={15} /></span><span><b>{a.text}</b><small>{fmtDate(a.time.slice(0, 10))} · {a.time.slice(11)} · by {a.who}</small></span></li>)}</ol> : <Empty text="No activity yet" />}</section>
  <section className="panel span-8"><div className="panel-head"><div><h3>Deals in motion</h3><p>Your most valuable open opportunities</p></div><Button kind="subtle" onClick={() => go("Deals")}>View pipeline →</Button></div><div className="table-wrap"><table><thead><tr><th>Opportunity</th><th>Value</th><th>Stage</th><th>Probability</th><th>Owner</th></tr></thead><tbody>{top.map((d) => <tr key={d.id}><td><div className="cell-main"><span className={"company-icon tone-" + d.id % 4}>{d.company[0]}</span><span><button className="text-btn" onClick={() => setModal({ type: "deal", record: d })}>{d.title}</button><small>{d.company} · closes {fmtDate(d.date)}</small></span></div></td><td><strong>{money(d.value)}</strong></td><td><span className={"stage-tag stage-" + d.stage}><i className="dot" />{stages[d.stage]}</span></td><td><div className={"chance stage-" + d.stage}><div className="progress"><span style={{ width: chances[d.stage] + "%" }} /></div><b>{chances[d.stage]}%</b></div></td><td><Avatar text={d.owner} tone={ownerTone(d.owner)} small /></td></tr>)}</tbody></table></div>{!top.length && <Empty />}</section>
  <section className="panel span-12"><div className="panel-head"><div><h3>Project health</h3><p>Progress and delivery status · live</p></div><Button kind="subtle" onClick={() => go("Projects")}>All projects →</Button></div>{projects.length ? <div className="ring-grid">{projects.map((p) => <button className="ring-card" key={p.id} onClick={() => setModal({ type: "project", record: p })}><Ring value={p.progress} tone={ringTone[p.status] || "k-accent"} label={p.progress + "% complete"}>{p.progress}%</Ring><span><b>{p.name}</b><small>{p.client} · due {fmtDate(p.due)}</small><Badge tone={statusTone[p.status]}>{p.status}</Badge></span></button>)}</div> : <Empty />}</section>
+ </div></>;
+}
+function Analytics(ctx) {
+  const { match, pageHead, exportCSV } = ctx;
+  const [range, setRange] = useState(30);
+  const { days } = traffic, cur = days.slice(-range), prev = days.slice(-2 * range, -range), m30 = days.slice(-30), p30 = days.slice(-60, -30);
+  const sum = (k) => (xs) => total(xs, k), secs = (xs) => xs.reduce((a, d) => a + d.duration * d.visitors, 0) / Math.max(1, total(xs, "visitors")), rate = (xs) => total(xs, "signups") / Math.max(1, total(xs, "visitors")) * 100;
+  const kpi = (f) => ({ trend: weeks(days, f), delta: change(f(m30), f(p30)), vs: "the previous 30 days" });
+  const visitors = total(m30, "visitors"), views = total(m30, "views"), signups = total(m30, "signups"), tones = ["k-c1", "k-c2", "k-c3", "k-c4", "k-muted"], deviceTones = ["k-accent", "k-soft", "k-muted"];
+  const weight = traffic.hours.reduce((a, w) => a + w, 0), hours = traffic.hours.map((w, i) => ({ label: String(i * 2).padStart(2, "0"), value: Math.round(visitors / 30 * w / weight / 2) }));
+  const peak = hours.reduce((a, h, i) => h.value > hours[a].value ? i : a, 0), quiet = hours.reduce((a, h, i) => h.value < hours[a].value ? i : a, 0), block = (i) => hours[i].label + ":00–" + String(i * 2 + 2).padStart(2, "0") + ":00";
+  const pages = traffic.pages.filter(match), countries = traffic.countries.filter(match), campaigns = traffic.campaigns.filter(match), best = Math.max(...traffic.campaigns.map((c) => c.signups / c.clicks));
+  return <>{pageHead("Website traffic, acquisition, and sign-ups. Every figure on this page is sample data.", <Button icon="download" onClick={() => exportCSV(cur.map((d) => ({ date: d.date, visitors: d.visitors, page_views: d.views, sign_ups: d.signups, avg_session_seconds: d.duration })), "traffic-" + range + "-days")}>Export {range} days</Button>)}<div className="stats"><StatCard tone="s1" icon="people" value={num(visitors)} label="Visitors" note="Last 30 days" {...kpi(sum("visitors"))} /><StatCard tone="s2" icon="eye" value={num(views)} label="Page views" note={(views / visitors).toFixed(1) + " pages per visit"} {...kpi(sum("views"))} /><StatCard tone="s3" icon="clock" value={clock(secs(m30))} label="Avg. session" note="Time on site per visit" {...kpi(secs)} /><StatCard tone="s4" icon="target" value={rate(m30).toFixed(1) + "%"} label="Sign-up rate" note={num(signups) + " sign-ups"} {...kpi(rate)} /></div><div className="dash">
+ <Panel span={8} title="Traffic overview" sub={"Daily visitors, last " + range + " days against the " + range + " days before · sample data"} action={<Range value={range} onChange={setRange} options={[7, 30, 90]} unit="D" word="days" label="Traffic period" />}><Figures items={[["Visitors", num(total(cur, "visitors"))], ["Against previous period", <Delta value={change(total(cur, "visitors"), total(prev, "visitors"))} note="against the previous period" />], ["Sign-ups", num(total(cur, "signups")) + " · " + rate(cur).toFixed(1) + "%"]]}><div className="legend"><span className="line k-accent"><i />Visitors</span><span className="line k-muted"><i />Previous period</span></div></Figures><TrendChart label={"Daily visitors over the last " + range + " days and the period before, sample data"} labels={cur.map((d) => fmtDate(d.date))} series={[{ label: "Previous period", values: prev.map((d) => d.visitors), tone: "k-muted" }, { label: "Visitors", values: cur.map((d) => d.visitors), tone: "k-accent", area: true }]} format={num} zero="0" tick={52} /></Panel>
+ <LiveNow />
+ <Panel span={4} title="Traffic sources" sub="Visitors by channel · last 30 days"><Breakdown parts={traffic.channels.map((c, i) => ({ label: c.name, tone: tones[i], value: Math.round(visitors * c.share), sub: c.rate + "% sign-up rate" }))} format={num} label="Visitors by channel" /></Panel>
+ <Panel span={4} title="Devices" sub="Share of visitors · last 30 days"><div className="ring-row">{traffic.devices.map((d, i) => <div key={d.name}><Ring value={d.share * 100} size={72} stroke={8} tone={deviceTones[i]} label={d.name + ", " + Math.round(d.share * 100) + "% of visitors"}>{Math.round(d.share * 100)}%</Ring><b>{d.name}</b></div>)}</div><ul className="legend-list">{traffic.devices.map((d, i) => <li className={deviceTones[i]} key={d.name}><i /><span>{d.name}<small>{clock(d.time)} per session · {d.bounce}% bounce</small></span><b>{num(visitors * d.share)}</b></li>)}</ul></Panel>
+ <Panel span={4} title="Busiest hours" sub="Average visitors per hour, by time of day"><Columns items={hours} label="Average visitors per hour, in two-hour blocks starting at" height={168} /><Figures className="split" items={[["Peak", block(peak)], ["Quietest", block(quiet)]]} /></Panel>
+ <Panel span={8} title="Top pages" sub="Most viewed pages · last 30 days"><div className="table-wrap"><table><thead><tr><th>Page</th><th>Views</th><th>Share of views</th><th>Avg. time</th><th>Bounce rate</th></tr></thead><tbody>{pages.map((p) => <tr key={p.path}><td><div className="cell-main"><span><b>{p.title}</b><small>{p.path}</small></span></div></td><td><strong>{Math.round(views * p.share).toLocaleString("en-US")}</strong></td><td><div className="chance meter"><div className="progress"><span style={{ width: p.share * 100 + "%" }} /></div><b>{Math.round(p.share * 100)}%</b></div></td><td>{clock(p.time)}</td><td>{p.bounce}%</td></tr>)}</tbody></table></div>{!pages.length && <Empty text="No pages match" />}</Panel>
+ <Panel span={4} title="Top countries" sub="Visitors by country · last 30 days">{countries.length ? <BarList items={countries.map((c) => ({ key: c.code, label: c.name, sub: Math.round(c.share * 100) + "% of visitors", value: Math.round(visitors * c.share), lead: <span className={"company-icon tone-" + traffic.countries.indexOf(c) % 4}>{c.code}</span> }))} format={num} label="Visitors by country" /> : <Empty text="No countries match" />}</Panel>
+ <Panel span={4} title="Audience" sub="New and returning visitors · last 30 days"><div className="ring-hero"><Ring value={traffic.returning * 100} size={112} stroke={12} label={Math.round(traffic.returning * 100) + "% of visitors are returning"}>{Math.round(traffic.returning * 100)}%</Ring><ul className="legend-list"><li className="k-accent"><i /><span>Returning<small>Visited before</small></span><b>{num(visitors * traffic.returning)}</b></li><li className="k-track"><i /><span>New<small>First visit</small></span><b>{num(visitors * (1 - traffic.returning))}</b></li></ul></div><Figures className="split" items={[["Pages per visit", (views / visitors).toFixed(1)], ["Bounce rate", traffic.bounce + "%"]]} /><span className="eyebrow">VISITS PER VISITOR</span><Columns items={traffic.frequency.map(([label, value]) => ({ label, value }))} format={(v) => v + "%"} label="Share of visitors by number of visits in 30 days" height={112} all /></Panel>
+ <Panel span={8} title="Campaigns" sub="Clicks, sign-ups, and cost per sign-up · last 30 days"><div className="table-wrap"><table><thead><tr><th>Campaign</th><th>Clicks</th><th>Sign-ups</th><th>Conversion</th><th>Spend</th><th>Cost per sign-up</th></tr></thead><tbody>{campaigns.map((c) => <tr key={c.name}><td><div className="cell-main"><span className={"company-icon tone-" + traffic.campaigns.indexOf(c) % 4}>{c.name[0]}</span><span><b>{c.name}</b><small>{c.channel}</small></span></div></td><td>{c.clicks.toLocaleString("en-US")}</td><td><strong>{c.signups}</strong></td><td><div className="chance meter"><div className="progress"><span style={{ width: c.signups / c.clicks / best * 100 + "%" }} /></div><b>{(c.signups / c.clicks * 100).toFixed(1)}%</b></div></td><td>{money(c.spend)}</td><td>{money(c.spend / c.signups)}</td></tr>)}</tbody>{campaigns.length > 1 && <tfoot><tr><td>Total</td><td>{total(campaigns, "clicks").toLocaleString("en-US")}</td><td>{total(campaigns, "signups")}</td><td>{(total(campaigns, "signups") / total(campaigns, "clicks") * 100).toFixed(1)}%</td><td>{money(total(campaigns, "spend"))}</td><td>{money(total(campaigns, "spend") / total(campaigns, "signups"))}</td></tr></tfoot>}</table></div>{!campaigns.length && <Empty text="No campaigns match" />}</Panel>
+ </div></>;
+}
+function LiveNow() {
+  const [bars, setBars] = useState(() => Array.from({ length: 30 }, (_, i) => ({ id: i, value: Math.round(112 + Math.sin(i / 3) * 24 + Math.sin(i * 1.7) * 10) })));
+  useEffect(() => {
+    const timer = setInterval(() => setBars((b) => {
+      const last = b[b.length - 1];
+      return [...b.slice(1), { id: last.id + 1, value: Math.max(64, Math.min(180, Math.round(last.value + (Math.random() - 0.48) * 24))) }];
+    }), 4e3);
+    return () => clearInterval(timer);
+  }, []);
+  const now = bars[bars.length - 1].value, max = Math.max(...bars.map((b) => b.value)), diff = change(now, total(bars) / bars.length);
+  return <Panel span={4} title="Active right now" sub="Visitors per minute, last 30 minutes · sample, updates every 4 s" action={<Badge tone="success"><span className="live-dot" />LIVE</Badge>}><div className="headline"><strong>{now}</strong><span>visitors on the site<small>{(diff < 0 ? "" : "+") + diff}% against the 30-minute average</small></span></div><div className="live-bars" role="img" aria-label={"Active visitors per minute over the last 30 minutes. Now " + now + ", peak " + max + "."}>{bars.map((b) => <i key={b.id} style={{ height: b.value / max * 100 + "%" }} />)}</div><div className="live-scale" aria-hidden="true"><small>30 min ago</small><small>Now</small></div><span className="eyebrow">TOP ACTIVE PAGES</span><ul className="legend-list">{traffic.live.map(([path, w]) => <li key={path}><Icon name="eye" size={16} /><span>{path}</span><b>{Math.round(now * w)}</b></li>)}</ul></Panel>;
+}
+function Ecommerce(ctx) {
+  const { data, match, pageHead, setModal, go, patch, log, setToast } = ctx;
+  const [range, setRange] = useState(30);
+  const { days } = store, cur = days.slice(-range), prev = days.slice(-2 * range, -range), m30 = days.slice(-30), p30 = days.slice(-60, -30);
+  const sum = (k) => (xs) => total(xs, k), aov = (xs) => total(xs, "sales") / Math.max(1, total(xs, "orders")), conv = (xs) => total(xs, "orders") / Math.max(1, total(xs, "sessions")) * 100;
+  const kpi = (f) => ({ trend: weeks(days, f), delta: change(f(m30), f(p30)), vs: "the previous 30 days" });
+  const sales = total(m30, "sales"), orders = total(m30, "orders"), sessions = total(m30, "sessions"), best = cur.reduce((a, d) => d.sales > a.sales ? d : a, cur[0]);
+  const steps = [["Sessions", sessions], ...store.funnel.map(([label, r]) => [label, Math.round(sessions * r)]), ["Purchased", orders]];
+  const list = data.orders.filter((o) => match(o, "#" + o.id)), waiting = list.filter((o) => o.status === "Pending" || o.status === "Processing").sort((a, b) => a.date.localeCompare(b.date)), recent = [...list].sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id).slice(0, 6);
+  const sellers = data.products.filter((p) => store.sold[p.id]).map((p) => ({ p, units: store.sold[p.id], value: store.sold[p.id] * p.price })), top = sellers.filter((x) => match(x.p)).sort((a, b) => b.value - a.value).slice(0, 5), productSales = total(sellers);
+  const cats = ["Software", "Service", "Add-on"].map((label, i) => {
+    const xs = sellers.filter((x) => x.p.category === label);
+    return { label, tone: "k-c" + (i + 1), value: total(xs), sub: plural(total(xs, "units"), "unit") };
+  }), lead = cats.reduce((a, c) => c.value > a.value ? c : a, cats[0]);
+  const last = days[days.length - 1].date, month = days.filter((d) => d.date.slice(0, 7) === last.slice(0, 7)), mtd = total(month, "sales"), dim = new Date(Number(last.slice(0, 4)), Number(last.slice(5, 7)), 0).getDate(), projected = mtd / month.length * dim;
+  const cover = sellers.filter((x) => x.p.status !== "Archived" && match(x.p)).map((x) => ({ ...x, left: x.p.stock / (x.units / 30) })).sort((a, b) => a.left - b.left), regions = store.regions.filter(match);
+  const restock = (p) => {
+    patch("products", p.id, { stock: p.stock + 50, status: "Active" });
+    log("Restocked " + p.name + " (+50)", "record");
+    setToast(p.name + " restocked with 50 units");
+  };
+  const icon = (p) => <span className={"company-icon tone-" + p.id % 4}>{p.name[0]}</span>;
+  return <>{pageHead("Store sales, checkout, and stock in one view. Sales history is sample data; orders and stock are live.", <><Button icon="cart" onClick={() => go("Orders")}>Orders</Button><Button kind="primary" icon="plus" onClick={() => setModal({ type: "product" })}>Add product</Button></>)}<div className="stats"><StatCard tone="s1" icon="bag" value={short(sales)} label="Net sales" note="Last 30 days" {...kpi(sum("sales"))} /><StatCard tone="s2" icon="cart" value={orders.toLocaleString("en-US")} label="Orders" note={Math.round(orders / 30) + " per day on average"} {...kpi(sum("orders"))} /><StatCard tone="s3" icon="card" value={money(aov(m30))} label="Average order" note="Net sales per order" {...kpi(aov)} /><StatCard tone="s4" icon="target" value={conv(m30).toFixed(1) + "%"} label="Conversion rate" note={num(sessions) + " store sessions"} {...kpi(conv)} /></div><div className="dash">
+ <Panel span={8} title="Sales overview" sub={"Daily net sales, last " + range + " days against the " + range + " days before · sample data"} action={<Range value={range} onChange={setRange} options={[7, 30, 90]} unit="D" word="days" label="Sales period" />}><Figures items={[["Net sales", short(total(cur, "sales"))], ["Against previous period", <Delta value={change(total(cur, "sales"), total(prev, "sales"))} note="against the previous period" />], ["Orders", total(cur, "orders").toLocaleString("en-US")], ["Best day", fmtDate(best.date) + " · " + short(best.sales)]]}><div className="legend"><span className="line k-accent"><i />Net sales</span><span className="line k-muted"><i />Previous period</span></div></Figures><TrendChart label={"Daily net sales over the last " + range + " days and the period before, sample data"} labels={cur.map((d) => fmtDate(d.date))} series={[{ label: "Previous period", values: prev.map((d) => d.sales), tone: "k-muted" }, { label: "Net sales", values: cur.map((d) => d.sales), tone: "k-accent", area: true }]} format={short} tick={52} /></Panel>
+ <Panel span={4} title="Checkout funnel" sub="Sessions to purchase · last 30 days · conversion from the step before"><div className="funnel">{steps.map(([label, n], i) => <div className="funnel-row k-accent" key={label}><div className="funnel-label"><span>{label}</span><b>{num(n)}</b><small>{i ? pct(n, steps[i - 1][1]) + "%" : "100%"}</small></div><div className="funnel-track"><span className="funnel-bar" style={{ width: Math.max(n / sessions * 100, 2) + "%" }} /></div></div>)}</div><Figures className="split" items={[["Conversion rate", conv(m30).toFixed(1) + "%"], ["Cart abandonment", 100 - pct(orders, steps[2][1]) + "%"]]} /></Panel>
+ <Panel span={4} title="Fulfilment queue" sub="Orders by status · live" action={<Button kind="subtle" onClick={() => go("Orders")}>Orders →</Button>}><div className="count-grid quad">{["Pending", "Processing", "Shipped", "Delivered"].map((s) => {
+    const xs = list.filter((o) => o.status === s);
+    return <div key={s}><small>{s}</small><strong>{xs.length}</strong><small>{money(total(xs, "total"))}</small></div>;
+  })}</div><span className="eyebrow">WAITING LONGEST</span>{waiting.length ? <ul className="legend-list">{waiting.slice(0, 3).map((o) => <li key={o.id}><span className={"company-icon tone-" + o.customer.length % 4}>{o.customer[0]}</span><span>#{o.id} · {o.customer}<small>{o.status} · {plural(Math.max(0, -daysTo(o.date)), "day")} waiting</small></span><b>{money(o.total)}</b></li>)}</ul> : <p>Nothing is waiting. Every order is on its way.</p>}</Panel>
+ <Panel span={8} title="Recent orders" sub="Newest first · live" action={<Button kind="subtle" onClick={() => go("Orders")}>View all orders →</Button>}><div className="table-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody>{recent.map((o) => <tr key={o.id}><td><div className="cell-main"><span><b>#{o.id}</b><small>{o.payment}</small></span></div></td><td><div className="cell-main"><span className={"company-icon tone-" + o.customer.length % 4}>{o.customer[0]}</span>{o.customer}</div></td><td>{fmtDate(o.date)}</td><td>{o.items}</td><td><strong>{money(o.total)}</strong></td><td><Badge tone={statusTone[o.status]}>{o.status}</Badge></td></tr>)}</tbody></table></div>{!recent.length && <Empty text="No orders match" />}</Panel>
+ <Panel span={4} title="Top products" sub="Revenue · last 30 days · sample units at live prices">{top.length ? <BarList items={top.map(({ p, units, value }) => ({ key: p.id, label: p.name, sub: units + " sold · " + money(p.price), value, lead: icon(p) }))} format={short} label="Revenue by product" /> : <Empty text="No products match" />}</Panel>
+ <Panel span={4} title="Sales by category" sub="Product revenue · last 30 days"><div className="headline"><strong>{pct(lead.value, productSales)}%</strong><span>{lead.label}<small>of {short(productSales)} in product sales</small></span></div><Breakdown parts={cats} format={short} label="Product revenue by category" /></Panel>
+ <Panel span={4} title={new Date(last + "T12:00:00").toLocaleDateString("en-US", { month: "long" }) + " goal"} sub={"Net sales against a " + short(store.goal) + " sample target"}><div className="gauge-wrap"><Gauge value={mtd / store.goal} extra={Math.max(0, projected - mtd) / store.goal} label={"Sold " + short(mtd) + " of " + short(store.goal) + ", projected " + short(projected) + " by month end"} /><div className="gauge-value"><strong>{pct(mtd, store.goal)}%</strong><small>of goal reached</small></div></div><ul className="legend-list"><li className="k-accent"><i /><span>Sales to date<small>{plural(month.length, "day")} of {dim}</small></span><b>{short(mtd)}</b></li><li className="k-soft"><i /><span>Projected at month end<small>At the current daily pace</small></span><b>{short(projected)}</b></li><li><Icon name="target" size={16} /><span>Needed per day<small>To reach the goal</small></span><b>{short(Math.max(0, store.goal - mtd) / Math.max(1, dim - month.length))}</b></li></ul></Panel>
+ <Panel span={4} title="Stock cover" sub="Days left at the 30-day sales pace · live stock">{cover.length ? <ul className="legend-list">{cover.map(({ p, units, left }) => <li key={p.id}>{icon(p)}<span>{p.name}<small>{p.stock ? p.stock + " in stock · " + (units / 30).toFixed(1) + " sold per day" : "Out of stock"}</small></span>{left < 14 && <Button kind="subtle" icon="plus" aria-label={"Restock " + p.name + " with 50 units"} onClick={() => restock(p)}>50</Button>}<b className={left < 7 ? "late" : ""}>{plural(Math.floor(left), "day")}</b></li>)}</ul> : <Empty text="No products match" />}</Panel>
+ <Panel span={8} title="Sales by region" sub="Net sales and orders · last 30 days"><div className="table-wrap"><table><thead><tr><th>Region</th><th>Orders</th><th>Net sales</th><th>Share of sales</th><th>Avg. order</th><th>Change</th></tr></thead><tbody>{regions.map((r) => <tr key={r.name}><td><div className="cell-main"><span className={"company-icon tone-" + store.regions.indexOf(r) % 4}>{r.code || <Icon name="globe" size={13} />}</span><b>{r.name}</b></div></td><td>{Math.round(orders * r.orders).toLocaleString("en-US")}</td><td><strong>{money(sales * r.sales)}</strong></td><td><div className="chance meter"><div className="progress"><span style={{ width: r.sales * 100 + "%" }} /></div><b>{Math.round(r.sales * 100)}%</b></div></td><td>{money(sales * r.sales / (orders * r.orders))}</td><td><Delta value={r.change} note="against the previous 30 days" /></td></tr>)}</tbody></table></div>{!regions.length && <Empty text="No regions match" />}</Panel>
  </div></>;
 }
 function Reports(ctx) {
@@ -459,43 +534,198 @@ function Components(ctx) {
  <Panel span={4} title="Empty state"><Empty text="Nothing here yet">Use empty states to explain what will appear and how to add it.</Empty></Panel>
  </div></>;
 }
-function Pages(ctx) {
-  const { pageHead, go } = ctx;
-  return <>{pageHead("Full-page layouts for authentication, errors, and maintenance. They open outside the dashboard shell.")}<div className="card-grid">{screens.map(([name, icon, sub]) => <article className="panel screen-card" key={name}><div className="screen-thumb"><div className="mock">{/^Error/.test(name) ? <strong>{name.slice(-3)}</strong> : <><span className="stat-icon"><Icon name={icon} size={20} /></span><i /><i />{name !== "Maintenance" && <i className="mock-btn" />}</>}</div></div><h3>{name}</h3><p>{sub}</p><Button onClick={() => go(name)}>Open page <Icon name="arrow" size={13} /></Button></article>)}</div></>;
+const screens = [["Sign in", "lock", "Split layout with a highlight carousel, single sign-on, and a smarter password field.", "Authentication", ["Carousel", "Show password", "Caps Lock hint"]], ["Sign up", "user", "Plan picker, live password-strength meter, and a customer quote.", "Authentication", ["Plan picker", "Strength meter", "Quote"]], ["Forgot password", "mail", "Three-step recovery with a one-time code and a resend timer.", "Authentication", ["Stepper", "Code input", "Resend timer"]], ["Lock screen", "clock", "Live clock, an away summary, and a quick unlock.", "Authentication", ["Live clock", "Away summary"]], ["Error 404", "search", "Page search, popular destinations, and a floating illustration.", "System", ["Page search", "Quick links"]], ["Error 500", "alert", "Service status, an auto-retry countdown, and a copyable reference.", "System", ["Status list", "Auto-retry", "Copy reference"]], ["Maintenance", "settings", "Countdown, upgrade checklist, and a notify-me form.", "System", ["Countdown", "Checklist", "Notify me"]]];
+const blocks = [["Password field", "Show/hide toggle and Caps Lock hint", 4], ["Timers", "Countdowns and a live clock", 4], ["Clay art", "Floating orbs and cards", 4], ["Strength meter", "Four rules with live feedback", 2], ["Status list", "Pulsing service and task states", 2]];
+const journey = [["Sign up", "user", "Create an account"], ["Sign in", "lock", "Open the workspace"], ["Dashboard", "home", "Work in the app"], ["Lock screen", "clock", "Locks after inactivity"]];
+function Thumb({ name }) {
+  if (name === "Error 404") return <div className="mock mock-center"><strong>4<span className="mock-orb" />4</strong><i className="mock-line" /></div>;
+  if (name === "Error 500") return <div className="mock mock-center"><strong>500</strong><span className="mock-status"><b /><b /><b /></span></div>;
+  if (name === "Maintenance") return <div className="mock mock-center"><span className="mock-gear"><Icon name="settings" size={22} /></span><span className="mock-count"><b /><b /><b /></span><i className="mock-stripes" /></div>;
+  if (name === "Lock screen") return <div className="mock mock-center"><strong className="mock-clock">10<em>:</em>42</strong><span className="mock-avatar" /><i className="mock-line" /><i className="mock-btn" /></div>;
+  return <div className="mock mock-split"><span className="mock-side"><b /><b /><b /></span><span className="mock-form">{name === "Forgot password" ? <span className="mock-otp"><b /><b /><b /><b /></span> : <i className="mock-line" />}{name === "Sign up" ? <i className="mock-meter" /> : <i className="mock-line" />}<i className="mock-btn" /></span></div>;
 }
-const screens = [["Sign in", "lock", "Login form with remember me and social-style options"], ["Sign up", "user", "Registration form with terms checkbox"], ["Forgot password", "mail", "Request a password reset link"], ["Lock screen", "lock", "Re-enter password after inactivity"], ["Error 404", "search", "Page not found"], ["Error 500", "alert", "Server error"], ["Maintenance", "settings", "Scheduled downtime notice"]];
-function Screen({ name, settings, go, setToast }) {
-  const [sent, setSent] = useState(false);
-  const enter = (msg) => (e) => {
+function Pages(ctx) {
+  const { pageHead, go, query } = ctx, [kind, setKind] = useState("All"), q = query.toLowerCase();
+  const list = screens.filter(([name, , sub, k, tags]) => (kind === "All" || k === kind) && (name + " " + sub + " " + tags.join(" ")).toLowerCase().includes(q)), count = (k) => screens.filter((s) => s[3] === k).length;
+  return <>{pageHead("Full-page layouts for authentication, errors, and maintenance. They open outside the dashboard shell.")}<div className="stats"><StatCard tone="s1" icon="grid" value={screens.length} label="Layouts" note="Open outside the shell" /><StatCard tone="s2" icon="lock" value={count("Authentication")} label="Authentication" note="Sign up to lock screen" /><StatCard tone="s3" icon="alert" value={count("System")} label="System pages" note="Errors and maintenance" /><StatCard tone="s4" icon="sparkle" value={screens.reduce((a, s) => a + s[4].length, 0)} label="Built-in features" note="Timers, meters, and more" /></div><div className="filter-bar"><Segmented label="Page type" options={["All", "Authentication", "System"]} value={kind} onChange={setKind} /><span>{plural(list.length, "layout")}</span></div>{list.length ? <div className="card-grid screen-grid">{list.map(([name, , sub, k, tags]) => <article className="panel screen-card" key={name}><div className="screen-thumb"><Thumb name={name} /></div><Badge tone={k === "System" ? "medium" : ""}>{k}</Badge><h3>{name}</h3><p>{sub}</p><ul className="tag-list" aria-label="Features">{tags.map((t) => <li key={t}>{t}</li>)}</ul><Button onClick={() => go(name)}>Open page <Icon name="arrow" size={13} /></Button></article>)}</div> : <div className="panel"><Empty text="No layouts match">Try another search or page type.</Empty></div>}<div className="dash">
+ <Panel span={8} title="Sign-in journey" sub="How the authentication layouts connect. Select a step to open it."><div className="journey"><ol>{journey.map(([name, icon, sub], i) => <li key={name} style={{ "--i": i }}><button className="journey-node" onClick={() => go(name)}><span className="stat-icon"><Icon name={icon} size={20} /></span><b>{name}</b><small>{sub}</small></button></li>)}</ol><div className="journey-branch" style={{ "--i": 4 }}><button className="journey-node" onClick={() => go("Forgot password")}><span className="stat-icon"><Icon name="key" size={20} /></span><b>Forgot password</b><small>Code, then a new password</small></button><p>Recovery returns to Sign in. Unlocking returns to the dashboard.</p></div></div></Panel>
+ <Panel span={4} title="Shared building blocks" sub="Reused across the seven layouts"><BarList label="Building blocks by number of layouts that use them" items={blocks.map(([label, sub, value]) => ({ label, sub, value }))} format={(v) => plural(v, "layout")} /></Panel>
+ </div></>;
+}
+const pad = (n) => String(n).padStart(2, "0");
+function useNow(ms = 1e3) {
+  const [now, setNow] = useState(Date.now);
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), ms);
+    return () => clearInterval(t);
+  }, [ms]);
+  return now;
+}
+function useEnter(go, setToast) {
+  const [busy, setBusy] = useState(false), timer = useRef();
+  useEffect(() => () => clearTimeout(timer.current), []);
+  return [busy, (msg) => (e) => {
     e.preventDefault();
-    go("Dashboard");
-    setToast(msg, { tone: "info" });
+    if (busy) return;
+    setBusy(true);
+    timer.current = setTimeout(() => {
+      go("Dashboard");
+      setToast(msg, { tone: "info" });
+    }, 800);
+  }];
+}
+const Submit = ({ busy, busyText, icon, children, ...props }) => <Button kind={"primary" + (busy ? " busy" : "")} type="submit" icon={busy ? null : icon} aria-disabled={busy || void 0} {...props}>{busy && <i className="spinner" aria-hidden="true" />}{busy ? busyText : children}</Button>;
+const IconInput = ({ label, icon, ...props }) => <label className="field"><span>{label}</span><span className="input-wrap"><Icon name={icon} size={16} /><input {...props} /></span></label>;
+function Password({ label = "Password", ...props }) {
+  const [show, setShow] = useState(false), [caps, setCaps] = useState(false);
+  const key = (e) => setCaps(!!e.getModifierState?.("CapsLock"));
+  return <label className="field"><span>{label}</span><span className="input-wrap"><Icon name="lock" size={16} /><input type={show ? "text" : "password"} required placeholder="••••••••" spellCheck="false" onKeyDown={key} onKeyUp={key} onBlur={() => setCaps(false)} {...props} /><button type="button" className="peek" aria-label="Show password" aria-pressed={show} onClick={() => setShow(!show)}><Icon name={show ? "eyeOff" : "eye"} size={17} /></button></span>{caps && <small className="field-hint"><Icon name="alert" size={13} />Caps Lock is on</small>}</label>;
+}
+const rules = [["At least 8 characters", (p) => p.length >= 8], ["A number", (p) => /\d/.test(p)], ["Upper and lower case", (p) => /[a-z]/.test(p) && /[A-Z]/.test(p)], ["A symbol", (p) => /[^A-Za-z0-9]/.test(p)]];
+function Strength({ value }) {
+  const met = rules.map(([, test]) => test(value)), score = !value ? 0 : met[0] ? met.filter(Boolean).length : 1;
+  return <div className={"strength s" + score}><div className="strength-head"><span className="strength-bar" aria-hidden="true">{[1, 2, 3, 4].map((n) => <i key={n} className={n <= score ? "on" : ""} />)}</span><b aria-live="polite">{["Enter a password", "Weak", "Fair", "Good", "Strong"][score]}</b></div><ul>{rules.map(([text], i) => <li key={text} className={met[i] ? "met" : ""}>{met[i] ? <Icon name="tick" size={13} /> : <i />}{text}<span className="sr-only">{met[i] ? " (done)" : " (not yet)"}</span></li>)}</ul></div>;
+}
+const highlights = [["Pipeline at a glance", "Every deal, stage, and owner on one calm board."], ["Forecast with confidence", "Weighted forecasts show where the quarter is heading."], ["Know every customer", "Contacts, deals, and notes linked in one place."]];
+function Highlights() {
+  const [at, setAt] = useState(0), [paused, setPaused] = useState(() => matchMedia("(prefers-reduced-motion: reduce)").matches), [hold, setHold] = useState(false);
+  useEffect(() => {
+    if (paused || hold) return;
+    const t = setInterval(() => setAt((i) => (i + 1) % highlights.length), 5e3);
+    return () => clearInterval(t);
+  }, [paused, hold]);
+  const art = [<><div className="mini-card"><span className="stat-icon"><Icon name="briefcase" size={18} /></span><span><small>Open pipeline</small><b>$482K</b></span><Sparkline values={[4, 6, 5, 8, 7, 9, 11, 13]} /></div><span className="float-chip"><Icon name="arrow" size={12} />12% this week</span></>, <><div className="mini-card"><Ring value={72} size={56} label="72% of the quarterly target">72%</Ring><span><small>Q4 target</small><b>On track</b></span></div><span className="float-chip"><Icon name="calendar" size={12} />3 deals closing</span></>, <><div className="mini-card"><span className="avatar-stack">{[1, 2, 3, 4].map((id) => <Avatar key={id} small photo={photos[id]} />)}</span><span><small>Accounts</small><b>6 contacts</b></span></div><span className="float-chip"><Icon name="message" size={12} />2 new replies</span></>];
+  return <div className="highlights" onMouseEnter={() => setHold(true)} onMouseLeave={() => setHold(false)} onFocus={() => setHold(true)} onBlur={() => setHold(false)}><div className="slides">{highlights.map(([title, sub], i) => <div key={title} className={"slide" + (i === at ? " active" : "")} aria-hidden={i !== at}><div className="slide-art">{art[i]}</div><h3>{title}</h3><p>{sub}</p></div>)}</div><div className="slide-controls"><span className="dots">{highlights.map(([title], i) => <button key={title} type="button" aria-label={"Highlight " + (i + 1) + ": " + title} aria-current={i === at} onClick={() => setAt(i)}><i /></button>)}</span><button type="button" className="icon-btn" aria-label={paused ? "Play highlights" : "Pause highlights"} onClick={() => setPaused(!paused)}><Icon name={paused ? "play" : "pause"} size={14} /></button></div></div>;
+}
+const perks = ["Unlimited contacts and deals", "Kanban pipeline with forecasts", "Reports and CSV export", "Light and dark themes in four accents"];
+const recovery = ["Confirm your email", "Enter the 6-digit code", "Choose a new password"];
+function Aside({ kind, step = 0 }) {
+  return <aside className="auth-aside" aria-label="About Mellow"><i className="orb o1" aria-hidden="true" /><i className="orb o2" aria-hidden="true" /><i className="orb o3" aria-hidden="true" />{kind === "Sign in" ? <><span className="aside-eyebrow">Welcome to mellow.</span><h2>Your pipeline, beautifully calm.</h2><Highlights /></> : kind === "Sign up" ? <><span className="aside-eyebrow">Free for 14 days · No card needed</span><h2>Start free and grow at your own pace.</h2><ul className="perks">{perks.map((p, i) => <li key={p} style={{ "--i": i }}><span><Icon name="tick" size={14} /></span>{p}</li>)}</ul><figure className="quote"><blockquote>“Our weekly pipeline review used to take an hour. With Mellow it takes ten minutes.”</blockquote><figcaption><Avatar small photo={photos[1]} /><span><b>Olivia Chen</b><small>Creative Director, Bloom Studio</small></span></figcaption></figure></> : <><span className="aside-icon"><Icon name="shield" size={30} /></span><span className="aside-eyebrow">Account recovery</span><h2>Back in three short steps.</h2><ol className="aside-steps">{recovery.map((s, i) => <li key={s} className={i < step ? "done" : i === step ? "current" : ""}><span>{i < step ? <Icon name="tick" size={14} /> : i + 1}</span>{s}</li>)}</ol><p>Codes expire after 10 minutes. We never ask for your password by email.</p></>}</aside>;
+}
+const Brand = ({ go }) => <a href="#dashboard" className="brand auth-brand" onClick={() => go("Dashboard")}><span className="brand-mark">m</span> mellow<span className="brand-dot">.</span></a>;
+const note = <p className="auth-note">Demo screen. No credentials are checked or stored.</p>;
+function AuthShell({ settings, go, aside, className = "", before, after, children }) {
+  const [entering, setEntering] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setEntering(false), 1500);
+    return () => clearTimeout(t);
+  }, []);
+  return <div className={"auth-shell " + className + (entering ? " entering" : "")}><i className="blob b1" aria-hidden="true" /><i className="blob b2" aria-hidden="true" />{before}<div className={"auth-stage" + (aside ? " split" : "")}>{aside}<section className="auth-card">{!before && <Brand go={go} />}{children}</section></div>{after}<p className="auth-foot">© 2026 {settings.workspace} · <button className="text-btn link" onClick={() => go("Pages")}>All pages</button></p></div>;
+}
+function SignIn(props) {
+  const { go, setToast } = props, [busy, enter] = useEnter(go, setToast), soon = (what) => setToast(what + " is not connected in this demo", { tone: "info" });
+  return <AuthShell {...props} aside={<Aside kind="Sign in" />}><form onSubmit={enter("Demo sign-in: no credentials were checked")}><h2>Welcome back</h2><p>Sign in to continue to your workspace.</p><div className="social-row"><Button type="button" icon="key" onClick={() => soon("Single sign-on")}>Single sign-on</Button><Button type="button" icon="mail" onClick={() => soon("Magic link")}>Email me a link</Button></div><p className="divider"><span>or use your email</span></p><IconInput label="Email address" icon="mail" type="email" required autoComplete="username" placeholder="you@example.com" /><Password autoComplete="current-password" /><div className="auth-row"><label className="check"><input type="checkbox" /> Remember me</label><button type="button" className="text-btn link" onClick={() => go("Forgot password")}>Forgot password?</button></div><Submit busy={busy} busyText="Signing in…">Sign in</Submit><p className="auth-switch">New here? <button type="button" className="text-btn link" onClick={() => go("Sign up")}>Create an account</button></p>{note}</form></AuthShell>;
+}
+function SignUp(props) {
+  const { go, setToast } = props, [busy, enter] = useEnter(go, setToast), [pw, setPw] = useState(""), [plan, setPlan] = useState("Pro");
+  return <AuthShell {...props} aside={<Aside kind="Sign up" />}><form onSubmit={enter("Demo sign-up: no account was created")}><h2>Create your account</h2><p>Start organizing your pipeline in minutes.</p><fieldset className="plan-pick"><legend>Plan</legend>{plans.map((p) => <label key={p.name} className={plan === p.name ? "selected" : ""}><input type="radio" name="plan" value={p.name} checked={plan === p.name} onChange={() => setPlan(p.name)} /><b>{p.name}</b><small>{p.price ? "$" + p.price + "/mo" : "Free"}</small></label>)}</fieldset><IconInput label="Full name" icon="user" required maxLength="60" autoComplete="name" placeholder="Your name" /><IconInput label="Email address" icon="mail" type="email" required autoComplete="email" placeholder="you@example.com" /><Password autoComplete="new-password" minLength="8" placeholder="At least 8 characters" value={pw} onChange={(e) => setPw(e.target.value)} /><Strength value={pw} /><label className="check"><input type="checkbox" required /> I agree to the terms and privacy policy</label><Submit busy={busy} busyText="Creating account…">Create account</Submit><p className="auth-switch">Already have an account? <button type="button" className="text-btn link" onClick={() => go("Sign in")}>Sign in</button></p>{note}</form></AuthShell>;
+}
+function Otp({ value, onChange }) {
+  const refs = useRef([]), focus = (i) => refs.current[Math.max(0, Math.min(5, i))]?.focus();
+  return <div className="otp" role="group" aria-label="6-digit code">{value.map((d, i) => <input key={i} ref={(el) => refs.current[i] = el} inputMode="numeric" autoComplete={i ? "off" : "one-time-code"} autoFocus={!i} maxLength="1" aria-label={"Digit " + (i + 1) + " of 6"} value={d} className={d ? "filled" : ""} onChange={(e) => {
+    const v = e.target.value.replace(/\D/g, "").slice(-1);
+    onChange(value.map((x, j) => j === i ? v : x));
+    if (v) focus(i + 1);
+  }} onKeyDown={(e) => {
+    if (e.key === "Backspace" && !d) focus(i - 1);
+    else if (e.key === "ArrowLeft") focus(i - 1);
+    else if (e.key === "ArrowRight") focus(i + 1);
+  }} onPaste={(e) => {
+    const digits = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    if (!digits) return;
+    e.preventDefault();
+    onChange(value.map((x, j) => digits[j] || ""));
+    focus(digits.length);
+  }} />)}</div>;
+}
+function Resend({ until, onResend }) {
+  const left = Math.ceil((until - useNow()) / 1e3);
+  return left > 0 ? <p className="auth-switch">Resend code in <b>0:{pad(left)}</b></p> : <p className="auth-switch">Didn’t get it? <button type="button" className="text-btn link" onClick={onResend}>Resend code</button></p>;
+}
+function Forgot(props) {
+  const { go, setToast } = props, [step, setStep] = useState(0), [email, setEmail] = useState(""), [code, setCode] = useState(["", "", "", "", "", ""]), [pw, setPw] = useState(""), [again, setAgain] = useState(""), [until, setUntil] = useState(0), [tried, setTried] = useState(false), [busy, setBusy] = useState(false), timer = useRef();
+  useEffect(() => () => clearTimeout(timer.current), []);
+  const mismatch = again && pw !== again && (tried || !pw.startsWith(again)), filled = code.join("").length === 6;
+  const next = (e) => {
+    e.preventDefault();
+    if (step === 2 && pw !== again) setTried(true);
+    if (busy || step === 1 && !filled || step === 2 && pw !== again) return;
+    setBusy(true);
+    timer.current = setTimeout(() => {
+      setBusy(false);
+      setStep(step + 1);
+      if (!step) setUntil(Date.now() + 3e4);
+    }, 700);
   };
-  const brand = <a href="#dashboard" className="brand auth-brand" onClick={() => go("Dashboard")}><span className="brand-mark">m</span> mellow<span className="brand-dot">.</span></a>;
-  const note = <p className="auth-note">Demo screen. No credentials are checked or stored.</p>;
-  const errors = { "Error 404": ["404", "This page wandered off.", "The page you are looking for doesn’t exist or has been moved."], "Error 500": ["500", "Something went wrong on our side.", "We’re looking into it. Please try again in a few minutes."], Maintenance: ["", "We’re making things better.", "Mellow is getting a little upgrade. We’ll be back shortly."] };
-  let body;
-  if (name === "Sign in") body = <form onSubmit={enter("Demo sign-in: no credentials were checked")}><h2>Welcome back</h2><p>Sign in to continue to your workspace.</p><label className="field"><span>Email address</span><input type="email" required autoComplete="username" placeholder="you@example.com" /></label><label className="field"><span>Password</span><input type="password" required autoComplete="current-password" placeholder="••••••••" /></label><div className="auth-row"><label className="check"><input type="checkbox" /> Remember me</label><button type="button" className="text-btn link" onClick={() => go("Forgot password")}>Forgot password?</button></div><Button kind="primary" type="submit">Sign in</Button><p className="auth-switch">New here? <button type="button" className="text-btn link" onClick={() => go("Sign up")}>Create an account</button></p>{note}</form>;
-  else if (name === "Sign up") body = <form onSubmit={enter("Demo sign-up: no account was created")}><h2>Create your account</h2><p>Start organizing your pipeline in minutes.</p><label className="field"><span>Full name</span><input required maxLength="60" autoComplete="name" placeholder="Your name" /></label><label className="field"><span>Email address</span><input type="email" required autoComplete="email" placeholder="you@example.com" /></label><label className="field"><span>Password</span><input type="password" required minLength="8" autoComplete="new-password" placeholder="At least 8 characters" /></label><label className="check"><input type="checkbox" required /> I agree to the terms and privacy policy</label><Button kind="primary" type="submit">Create account</Button><p className="auth-switch">Already have an account? <button type="button" className="text-btn link" onClick={() => go("Sign in")}>Sign in</button></p>{note}</form>;
-  else if (name === "Forgot password") body = sent ? <div><span className="stat-icon auth-icon"><Icon name="mail" size={24} /></span><h2>Check your inbox</h2><p>If an account exists for that address, a reset link is on its way. (Demo: nothing was sent.)</p><Button kind="primary" onClick={() => go("Sign in")}>Back to sign in</Button></div> : <form onSubmit={(e) => {
+  const panes = [<form onSubmit={next}><h2>Forgot your password?</h2><p>Enter your email and we’ll send you a 6-digit code.</p><IconInput label="Email address" icon="mail" type="email" required autoFocus autoComplete="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} /><Submit busy={busy} busyText="Sending…" icon="mail">Send code</Submit><p className="auth-switch"><button type="button" className="text-btn link" onClick={() => go("Sign in")}>← Back to sign in</button></p></form>, <form onSubmit={next}><h2>Check your inbox</h2><p>We sent a code to <b>{email}</b>. Any six digits work in this demo.</p><Otp value={code} onChange={setCode} /><Submit busy={busy} busyText="Verifying…" disabled={!filled}>Verify code</Submit><Resend until={until} onResend={() => {
+    setUntil(Date.now() + 3e4);
+    setCode(["", "", "", "", "", ""]);
+    setToast("Demo: a new code would go to " + email, { tone: "info" });
+  }} /><p className="auth-switch"><button type="button" className="text-btn link" onClick={() => setStep(0)}>Use a different email</button></p></form>, <form onSubmit={next}><h2>Choose a new password</h2><p>Make it one you don’t use anywhere else.</p><Password label="New password" autoFocus autoComplete="new-password" minLength="8" placeholder="At least 8 characters" value={pw} onChange={(e) => setPw(e.target.value)} /><Strength value={pw} /><Password label="Confirm password" autoComplete="new-password" value={again} onChange={(e) => setAgain(e.target.value)} aria-invalid={!!mismatch} />{mismatch && <small className="field-hint error" role="alert"><Icon name="alert" size={13} />Passwords don’t match yet</small>}<Submit busy={busy} busyText="Saving…">Update password</Submit></form>, <div className="center"><svg className="success-check" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23" pathLength="1" /><path d="m15 27 7 7 15-15" pathLength="1" /></svg><h2>Password updated</h2><p>You can now sign in with your new password. (Demo: nothing was changed.)</p><Button kind="primary" autoFocus onClick={() => go("Sign in")}>Back to sign in</Button></div>];
+  return <AuthShell {...props} aside={<Aside kind="Forgot password" step={step} />}><ol className="stepper" aria-label="Recovery progress">{["Email", "Verify", "Reset"].map((s, i) => <li key={s} className={i < step ? "done" : i === step ? "current" : ""} aria-current={i === step ? "step" : void 0}><span>{i < step ? <Icon name="tick" size={13} /> : i + 1}</span>{s}</li>)}</ol><div className="step-pane" key={step}>{panes[step]}</div></AuthShell>;
+}
+function Lock(props) {
+  const { data, go, setToast } = props, { settings } = data, now = new Date(useNow()), [at] = useState(() => new Date()), [busy, enter] = useEnter(go, setToast);
+  const [hh, mm] = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).split(":"), ago = Math.floor((now - at) / 6e4), today = localDay(now);
+  const next = data.events.filter((e) => e.date >= today).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))[0];
+  const away = [["message", plural(data.messages.filter((m) => m.unread).length, "unread message")], ["check", plural(data.tasks.filter((t) => !t.done && t.date <= today).length, "task") + " due"], ["calendar", next ? "Next event " + fmtDate(next.date) + ", " + next.time : "No upcoming events"]];
+  return <AuthShell {...props} className="lock-shell" before={<><header className="auth-top"><Brand go={go} /></header><div className="lock-clock"><time dateTime={now.toISOString()}>{hh}<span className="colon">:</span>{mm}</time><p>{now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</p></div></>} after={<ul className="lock-notes" aria-label="While you were away">{away.map(([icon, text], i) => <li key={icon} style={{ "--i": i }}><Icon name={icon} size={15} />{text}</li>)}</ul>}><form className="center" onSubmit={enter("Demo unlock: no password was checked")}><span className="lock-avatar"><Avatar text={initials(settings.name)} /></span><h2>{settings.name}</h2><p>{settings.email}</p><span className="lock-since"><Icon name="lock" size={13} />Locked {ago < 1 ? "just now" : plural(ago, "minute") + " ago"}</span><Password autoFocus autoComplete="current-password" /><Submit busy={busy} busyText="Unlocking…" icon="lock">Unlock</Submit><p className="auth-switch">Not you? <button type="button" className="text-btn link" onClick={() => go("Sign in")}>Sign in as someone else</button></p></form></AuthShell>;
+}
+const ErrorArt = ({ code, hot }) => <div className={"error-art" + (hot ? " hot" : "")} role="img" aria-label={"Error " + code}><b>{code[0]}</b><span className="orb-zero"><i /></span><b>{code[2]}</b><em /></div>;
+function NotFound(props) {
+  const { nav, go } = props, [q, setQ] = useState(""), term = q.trim().toLowerCase(), hits = nav.filter(([n, , s]) => (n + " " + s).toLowerCase().includes(term)).slice(0, 5), missing = location.hash.slice(1, 41);
+  return <AuthShell {...props} className="wide"><div className="center"><ErrorArt code="404" /><h2>This page wandered off.</h2><p>{missing && missing !== "error-404" ? <>Nothing lives at <code>#{missing}</code>. It may have moved, or the link may be mistyped.</> : "The page you are looking for doesn’t exist or has been moved."}</p><form role="search" className="page-search" onSubmit={(e) => {
+    e.preventDefault();
+    if (term && hits[0]) go(hits[0][0]);
+  }}><label className="input-wrap"><Icon name="search" size={16} /><input type="search" aria-label="Search pages" placeholder="Search pages, like “invoices”" value={q} onChange={(e) => setQ(e.target.value)} /></label></form>{term ? <ul className="page-hits" aria-label="Matching pages">{hits.map(([n, icon, section]) => <li key={n}><button onClick={() => go(n)}><span className="timeline-icon"><Icon name={icon} size={15} /></span><span><b>{n}</b><small>{section}</small></span><Icon name="chevron" size={14} /></button></li>)}{!hits.length && <li className="none">No page matches “{q.trim()}”.</li>}</ul> : <div className="quick-grid">{[["Dashboard", "home", "s1"], ["Contacts", "contact", "s2"], ["Deals", "briefcase", "s3"], ["Help", "help", "s4"]].map(([n, icon, tone]) => <button key={n} className={tone} onClick={() => go(n)}><span className="stat-icon"><Icon name={icon} size={18} /></span>{n}</button>)}</div>}<div className="actions center-actions"><Button kind="primary" icon="home" onClick={() => go("Dashboard")}>Back to dashboard</Button><Button onClick={() => history.length > 1 ? history.back() : go("Dashboard")}>Go back</Button></div></div></AuthShell>;
+}
+const services = [["Web app", "grid"], ["API", "layers"], ["Background jobs", "clock"], ["Database", "box"]], outage = { API: ["Degraded", "Recovering"], "Background jobs": ["Investigating", "Degraded"] }, serviceTone = { Operational: "success", Recovering: "low", Degraded: "medium", Investigating: "high" };
+function ServerError(props) {
+  const { go, setToast } = props, [ref] = useState(() => "ERR-" + Math.random().toString(16).slice(2, 8).toUpperCase()), [since] = useState(() => new Date()), [attempt, setAttempt] = useState(1), [until, setUntil] = useState(() => Date.now() + 2e4), [checking, setChecking] = useState(false), timer = useRef(), now = useNow();
+  const fixed = attempt >= 3, left = Math.max(0, Math.ceil((until - now) / 1e3)), state = (n) => fixed || !outage[n] ? "Operational" : outage[n][attempt - 1];
+  const retry = () => {
+    if (checking || fixed) return;
+    setChecking(true);
+    timer.current = setTimeout(() => {
+      setChecking(false);
+      setAttempt((a) => a + 1);
+      setUntil(Date.now() + 2e4);
+    }, 1200);
+  };
+  useEffect(() => {
+    if (!left) retry();
+  }, [left]);
+  useEffect(() => () => clearTimeout(timer.current), []);
+  const copy = () => (navigator.clipboard ? navigator.clipboard.writeText(ref) : Promise.reject()).then(() => setToast("Reference " + ref + " copied"), () => setToast("Couldn’t copy. Select the reference and copy it by hand.", { tone: "error" }));
+  return <AuthShell {...props} className="wide"><div className="center"><ErrorArt code="500" hot={!fixed} /><h2>{fixed ? "We’re back up and running." : "Something went wrong on our side."}</h2><p>{fixed ? "Thanks for waiting. Everything is working again." : "We’re looking into it. This page retries on its own, so you can leave it open."}</p><ul className="status-list" aria-label="Service status">{services.map(([n, icon]) => <li key={n} className={serviceTone[state(n)]}><Icon name={icon} size={16} /><span>{n}</span><Badge tone={serviceTone[state(n)]}><i className="pulse" />{state(n)}</Badge></li>)}</ul><div role="status">{fixed ? <p className="notice success"><Icon name="tick" size={16} />All systems are operational.</p> : <div className="retry-row"><Ring value={checking ? 100 : left / 20 * 100} size={44} stroke={4} label={checking ? "Checking now" : "Next retry in " + left + " seconds"}>{checking ? <i className="spinner" /> : left}</Ring><span><b>{checking ? "Checking…" : "Retrying automatically"}</b><small>Attempt {attempt} · started {since.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}</small></span><Button type="button" icon="refresh" onClick={retry} disabled={checking}>Retry now</Button></div>}</div><p className="ref-row">Reference <code>{ref}</code><button type="button" className="icon-btn" aria-label="Copy reference" onClick={copy}><Icon name="copy" size={14} /></button></p><div className="actions center-actions"><Button kind="primary" icon="home" onClick={() => go("Dashboard")}>Back to dashboard</Button><Button onClick={() => go("Help")}>Visit help center</Button></div></div></AuthShell>;
+}
+const upgrade = [["Database upgrade", 0, 40], ["Search index rebuild", 40, 80], ["Cache warm-up", 80, 100]];
+function Maintenance(props) {
+  const { go } = props, [end] = useState(() => Date.now() + 2832e3), now = useNow(), left = Math.max(0, end - now), done = Math.min(100, 100 - left / 72e5 * 100), [email, setEmail] = useState(""), [sent, setSent] = useState(false);
+  const parts = [[Math.floor(left / 36e5), "Hours"], [Math.floor(left / 6e4) % 60, "Minutes"], [Math.floor(left / 1e3) % 60, "Seconds"]];
+  return <AuthShell {...props} className="wide"><div className="center"><span className="gears" aria-hidden="true"><Icon name="settings" size={44} /><Icon name="settings" size={26} /></span><h2>We’re making things better.</h2><p>Mellow is getting a little upgrade. We’ll be back shortly.</p><div className="countdown" role="timer" aria-label={left ? "Back in about " + (parts[0][0] ? parts[0][0] + " hours " : "") + parts[1][0] + " minutes" : "Back any moment now"}>{parts.map(([v, label]) => <span key={label} aria-hidden="true"><b key={v}>{pad(v)}</b><small>{label}</small></span>)}</div><p className="progress-label"><span>Upgrade progress</span><b>{Math.floor(done)}%</b></p><div className="progress big striped" role="progressbar" aria-label="Upgrade progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.floor(done)}><span style={{ width: done + "%" }} /></div><ul className="status-list" aria-label="Upgrade steps">{upgrade.map(([n, from, to]) => {
+    const s = done >= to ? "Done" : done >= from ? "In progress" : "Queued";
+    return <li key={n} className={s === "Done" ? "success" : s === "Queued" ? "" : "low"}>{s === "Done" ? <Icon name="tick" size={16} /> : s === "Queued" ? <Icon name="clock" size={16} /> : <i className="spinner" aria-hidden="true" />}<span>{n}</span><Badge tone={s === "Done" ? "success" : s === "Queued" ? "" : "low"}>{s}</Badge></li>;
+  })}</ul>{sent ? <p className="notice success" role="status"><Icon name="tick" size={16} />We’ll email {email} when Mellow is back. (Demo: nothing was sent.)</p> : <form className="notify" onSubmit={(e) => {
     e.preventDefault();
     setSent(true);
-  }}><h2>Forgot your password?</h2><p>Enter your email and we’ll send you a reset link.</p><label className="field"><span>Email address</span><input type="email" required autoComplete="email" placeholder="you@example.com" /></label><Button kind="primary" type="submit">Send reset link</Button><p className="auth-switch"><button type="button" className="text-btn link" onClick={() => go("Sign in")}>← Back to sign in</button></p></form>;
-  else if (name === "Lock screen") body = <form className="center" onSubmit={enter("Demo unlock: no password was checked")}><Avatar text={initials(settings.name)} /><h2>{settings.name}</h2><p>Your session is locked. Enter your password to continue.</p><label className="field"><span>Password</span><input type="password" required autoComplete="current-password" placeholder="••••••••" /></label><Button kind="primary" type="submit" icon="lock">Unlock</Button><p className="auth-switch">Not you? <button type="button" className="text-btn link" onClick={() => go("Sign in")}>Sign in as someone else</button></p></form>;
-  else {
-    const [code, title, sub] = errors[name] || errors["Error 404"];
-    body = <div className="center">{code ? <strong className="error-code">{code}</strong> : <span className="stat-icon auth-icon"><Icon name="settings" size={26} /></span>}<h2>{title}</h2><p>{sub}</p>{name === "Maintenance" && <div className="progress big"><span style={{ width: "68%" }} /></div>}<div className="actions center-actions"><Button kind="primary" onClick={() => go("Dashboard")}>Back to dashboard</Button><Button onClick={() => go("Help")}>Visit help center</Button></div></div>;
-  }
-  return <div className="auth-shell"><section className="auth-card">{brand}{body}</section><p className="auth-foot">© 2026 {settings.workspace} · <button className="text-btn link" onClick={() => go("Pages")}>All pages</button></p></div>;
+  }}><label className="input-wrap"><Icon name="mail" size={16} /><input type="email" required aria-label="Email for updates" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} /></label><Button kind="primary" type="submit" icon="bell">Notify me</Button></form>}<div className="actions center-actions"><Button onClick={() => go("Dashboard")}>Back to dashboard</Button><Button onClick={() => go("Help")}>Visit help center</Button></div></div></AuthShell>;
+}
+const views = { "Sign in": SignIn, "Sign up": SignUp, "Forgot password": Forgot, "Lock screen": Lock, "Error 404": NotFound, "Error 500": ServerError, Maintenance };
+function Screen({ name, data, nav, go, setToast }) {
+  const View = views[name] || NotFound;
+  return <View settings={data.settings} data={data} nav={nav} go={go} setToast={setToast} />;
 }
 export {
   Activity,
+  Analytics,
   Billing,
   Calendar,
   Components,
   Contacts,
   Dashboard,
   DealInsights,
+  Ecommerce,
   Files,
   Help,
   Inbox,

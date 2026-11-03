@@ -2,7 +2,7 @@
 
 **Template dashboard admin bergaya *clay & glass*: lembut di mata, siap dipakai, dan mudah dikembangkan.**
 
-React 19 · 27 layar siap pakai · Tanpa CDN atau internet · Lisensi MIT · [Versi 1.1.0](CHANGELOG.md)
+React 19 · 29 layar siap pakai · Tanpa CDN atau internet · Lisensi MIT · [Versi 1.1.0](CHANGELOG.md)
 
 ![Mellow Admin: papan kanban Sales pipeline](docs/screenshots/deals-pipeline.jpg)
 
@@ -16,8 +16,8 @@ Cukup ekstrak lalu buka `index.html`. Tidak perlu `npm install`, server, atau ko
 
 - **Tampil beda sejak layar pertama.** Bayangan neumorphic, sentuhan kaca, animasi masuk yang membal lembut, dan 4 palet aksen lengkap memberi identitas visual yang jarang ada di template admin.
 - **Langsung jalan, bahkan offline.** React, CSS, ikon, dan font Nunito Sans sudah dibundel lokal. Tanpa CDN, font eksternal, atau panggilan API.
-- **Ada versi satu file.** `Mellow-Admin-Standalone.html` (±510 KB) memuat seluruh aplikasi dalam satu berkas HTML. Praktis untuk demo ke klien atau lampiran presentasi.
-- **Ringan.** Bundle JavaScript, termasuk React dan enam foto kontak, ±131 KB setelah gzip. CSS ±47 KB gzip, sudah termasuk font yang tertanam.
+- **Ada versi satu file.** `Mellow-Admin-Standalone.html` (±590 KB) memuat seluruh aplikasi dalam satu berkas HTML. Praktis untuk demo ke klien atau lampiran presentasi.
+- **Ringan.** Bundle JavaScript, termasuk React dan enam foto kontak, ±144 KB setelah gzip. CSS ±52 KB gzip, sudah termasuk font yang tertanam.
 - **Kode yang mudah dibaca.** Hanya lima berkas sumber, React murni tanpa router, state library, atau framework CSS. Satu orang bisa memahami seluruh alurnya dalam satu sore.
 - **Siap disambungkan ke backend.** Semua perubahan data lewat beberapa fungsi pusat, jadi mengganti `localStorage` dengan API Laravel, Node, atau backend lain cukup di satu tempat.
 
@@ -35,20 +35,20 @@ Cukup ekstrak lalu buka `index.html`. Tidak perlu `npm install`, server, atau ko
 
 ## Fitur
 
-### 27 layar siap pakai
+### 29 layar siap pakai
 
 Sidebar dikelompokkan seperti template admin profesional:
 
 | Kelompok | Halaman |
 |---|---|
-| **Overview** | Dashboard, Reports, Activity |
+| **Overview** | Dashboard (CRM), Analytics, eCommerce, Reports, Activity |
 | **CRM** | Contacts, Deals (kanban), Inbox, Calendar, Tasks |
 | **Commerce** | Products, Orders, Invoices |
 | **Workspace** | Projects, Files, Team |
 | **Account** | Profile, Billing, Settings, Help |
 | **UI kit** | Components, Pages |
 
-Ditambah **7 layar mandiri** tanpa sidebar: Sign in, Sign up, Forgot password, Lock screen, Error 404, Error 500, dan Maintenance. Alamat yang tidak dikenal otomatis menampilkan halaman 404.
+Ditambah **7 layar mandiri** tanpa sidebar: Sign in, Sign up, Forgot password, Lock screen, Error 404, Error 500, dan Maintenance. Alamat yang tidak dikenal otomatis menampilkan halaman 404. Setiap layar punya komponen dan animasinya sendiri: carousel dan tombol tampilkan sandi di Sign in, meter kekuatan sandi di Sign up, kode 6 digit di Forgot password, jam berjalan di Lock screen, pencarian halaman di 404, status layanan dengan coba ulang otomatis di 500, dan hitung mundur di Maintenance.
 
 ### Interaksi yang benar-benar berfungsi
 

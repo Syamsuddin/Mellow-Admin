@@ -38,8 +38,25 @@ Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengiku
   - Help: empat tautan cepat, pintasan keyboard, dan status workspace.
   - Components: etalase semua komponen, termasuk grafik.
   - Pages: thumbnail tiruan tiap layar.
+- Tujuh layar mandiri kini lebih kaya komponen dan bergerak:
+  - Sign in: tata letak terbelah dengan panel showcase. Carousel tiga sorotan (kartu mini pipeline dengan sparkline, cincin target, dan foto kontak) berganti tiap 5 detik, berhenti saat disorot kursor atau difokus, dan punya tombol jeda. Ditambah tombol single sign-on dan tautan email (demo), kolom berikon, tombol tampilkan sandi, peringatan Caps Lock, dan tombol dengan spinner.
+  - Sign up: pilihan paket dari data `plans`, meter kekuatan sandi empat tingkat dengan daftar syarat yang langsung tercentang, serta panel berisi daftar manfaat dan kutipan pelanggan fiktif.
+  - Forgot password: alur tiga langkah (email, kode 6 digit, sandi baru) dengan stepper. Kotak kode maju otomatis dan menerima tempel, tombol kirim ulang muncul setelah hitung mundur 30 detik, konfirmasi sandi diperiksa, dan tanda centang tergambar saat selesai. Panel samping mengikuti langkah aktif.
+  - Lock screen: jam besar yang berjalan, avatar dengan riak, lama terkunci, dan ringkasan selama ditinggal (pesan belum dibaca, tugas jatuh tempo, jadwal berikutnya) dari data live.
+  - Error 404: angka 404 melayang dengan orb dan satelit, alamat yang tidak ditemukan, pencarian halaman, empat tautan cepat, dan tombol Go back.
+  - Error 500: status layanan dengan titik berdenyut, percobaan ulang otomatis tiap 20 detik dengan cincin hitung mundur, tombol Retry now, nomor referensi yang bisa disalin, dan skenario pulih pada percobaan ketiga.
+  - Maintenance: roda gigi berputar, hitung mundur jam/menit/detik, progress bar bergaris, daftar langkah upgrade, dan formulir "Notify me" (demo).
+  - Isi kartu muncul berurutan saat layar dibuka, dan latar memiliki gumpalan warna yang bergeser pelan. Dengan "kurangi gerakan", semua animasi mati dan carousel tidak berganti sendiri.
+- Pages: kartu statistik, filter All/Authentication/System yang juga mengikuti kotak filter topbar, thumbnail yang bergerak saat disorot, label fitur per layar, diagram alur sign-in yang simpulnya bisa diklik, dan panel komponen bersama.
+- Ikon baru: `tick`, `eyeOff`, `refresh`, `shield`, `pause`, `play`, `copy`, `key`, dan `sparkle`.
 - Komponen baru di `src/components.jsx`: `TrendChart`, `Gauge`, `Ring`, `SegmentBar`, `Heatmap`, `Columns`, `BarList`, dan `Breakdown`. `RevenueChart` kini menerima `months` dan `values`. `StatCard` menerima prop opsional `trend` dan `delta`.
 - Data contoh baru di `src/data.js`: `revenue`, `trends`, `engagement`, dan `quarterTarget`.
+- Dua varian dashboard baru di grup Overview:
+  - **Analytics** (`#analytics`): dashboard trafik situs web. Kartu pengunjung, page view, rata-rata durasi sesi, dan tingkat sign-up dengan sparkline 12 minggu dan perubahan terhadap 30 hari sebelumnya. Grafik pengunjung harian 7D/30D/90D dibandingkan periode sebelumnya, panel "Active right now" yang diperbarui tiap 4 detik, sumber trafik, perangkat dengan cincin, jam tersibuk, halaman teratas, negara teratas, audiens baru vs kembali dengan jumlah kunjungan per pengunjung, dan tabel kampanye (klik, sign-up, konversi, biaya per sign-up). Tombol ekspor CSV mengikuti periode grafik. Semua angka adalah data contoh; tabel dan daftar mengikuti kotak filter.
+  - **eCommerce** (`#ecommerce`): dashboard toko. Kartu penjualan bersih, pesanan, nilai pesanan rata-rata, dan tingkat konversi. Grafik penjualan harian 7D/30D/90D, funnel checkout dengan tingkat cart abandonment, target bulanan berbentuk gauge dengan proyeksi akhir bulan, produk terlaris, penjualan per kategori, dan tabel penjualan per wilayah (data contoh). Antrean fulfilment, pesanan terbaru, dan sisa stok dalam hari (dengan tombol restok +50) memakai data live dan mengikuti kotak filter.
+- Data contoh baru di `src/data.js`: `store` (180 hari penjualan, unit terjual per produk, funnel, wilayah, target) dan `traffic` (180 hari trafik, kanal, perangkat, jam, halaman, negara, kampanye). Total 30 hari `store` disamakan dengan unit terjual × harga seed produk.
+- Ikon baru: `globe` dan `bag`.
+- `TrendChart` menerima `zero` (label sumbu nol, default `$0`) dan `tick` (jarak minimum label sumbu X, default 34 px), dan skala sumbu Y kini menyesuaikan nilai sekecil atau sebesar apa pun. `StatCard` menerima `vs` untuk teks pembanding pada chip perubahan. `Range` di `pages.jsx` menerima pilihan periode sendiri.
 - Token `--series` (warna seri grafik; `--accent` di mode terang, `--accent-deep` di mode gelap) serta `--fill-success`, `--fill-warning`, dan `--fill-danger` untuk isian status pada grafik. Ketiganya sudah diperiksa terhadap buta warna di kedua mode.
 - Animasi masuk "clay pop" pada konten setiap kali halaman dibuka. Kartu statistik, panel, dan kolom kanban naik sambil membesar dengan pantulan kecil. Ikon kartu statistik memantul. Baris tabel, task, timeline, pesan, dan kartu deal bergeser dari kiri. Batang grafik tumbuh dari bawah dan progress bar terisi dari kiri. Elemen muncul berurutan dari atas ke bawah, dan seluruh animasi selesai dalam kurang dari 2 detik. Sidebar dan topbar tidak dianimasikan.
 - Jeda berurutan hanya berlaku selama 2 detik setelah pindah halaman. Elemen yang muncul sesudahnya, misalnya record baru, kartu yang dipindah, atau hasil Undo, langsung muncul dengan pop tanpa jeda.
@@ -56,6 +73,8 @@ Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengiku
 
 - Di mode gelap, sidebar, latar belakang, dan `--accent-light` selalu ungu, apa pun aksen yang dipilih.
 - Di mode gelap, track switch dalam posisi mati hampir tidak terlihat.
+- Di layar mandiri, tulisan "mellow." pada logo hilang di lebar 1000 px ke bawah.
+- Di layar sempit, teks khusus pembaca layar di dalam tabel (misalnya kolom aksi di Products) lolos dari area gulir tabel dan membuat halaman bisa digeser ke samping. `.table-wrap` kini `position: relative`.
 
 ## [1.1.0] - 2026-11-03
 
