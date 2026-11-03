@@ -16,7 +16,22 @@ npm run build     # runs build.mjs (esbuild); this is the only script
 python3 -m http.server 8080   # optional: serve to get consistent localStorage (file:// varies by browser)
 ```
 
-There is no dev server, watch mode, linter, or test suite. To verify a change, rebuild, then open `index.html` (or the served URL) and exercise the page by hand. `QA.txt` lists the manual checks done for 1.0.0.
+There is no dev server, watch mode, linter, or test suite. To verify a change, rebuild, then open `index.html` (or the served URL) and exercise the page by hand. `QA.txt` lists the checks done for the current release (1.2.0).
+
+## Releases and packaging
+
+The version lives in `package.json`. The sidebar label reads it (`import { version } from "../package.json"` in `App.jsx`; esbuild inlines only the string), so it follows automatically. Everything else is written by hand and must match: `package-lock.json` (two `version` fields), the `[Versi x.y.z](CHANGELOG.md)` badge in `README.md`, the first line of `README.txt`, the header tag and footer of `PANDUAN.html`, the first line of `QA.txt`, and a new `## [x.y.z] - date` section plus link reference in `CHANGELOG.md`. `LICENSE.txt` is the only license file (MIT, Syams Ideris).
+
+The distributable ZIP holds only tracked template files. It leaves out `.git`, `.gitignore`, `CLAUDE.md`, `node_modules`, and `.DS_Store`, and unpacks to one `Mellow-Admin-x.y.z/` folder next to the repo:
+
+```bash
+npm run build
+V=$(node -p "require('./package.json').version"); T=$(mktemp -d); OUT="$(cd .. && pwd)/Mellow-Admin-$V.zip"
+git ls-files | grep -vxE '\.gitignore|\.gitattributes|CLAUDE\.md' | rsync -a --files-from=- ./ "$T/Mellow-Admin-$V/"
+rm -f "$OUT" && (cd "$T" && zip -X -r -q "$OUT" "Mellow-Admin-$V") && rm -rf "$T"
+```
+
+New files must be `git add`ed before packaging, because `git ls-files` lists only tracked files.
 
 ## Build pipeline
 

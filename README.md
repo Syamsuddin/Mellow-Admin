@@ -2,7 +2,7 @@
 
 **Template dashboard admin bergaya *clay & glass*: lembut di mata, siap dipakai, dan mudah dikembangkan.**
 
-React 19 · 36 layar siap pakai · Tanpa CDN atau internet · Lisensi MIT · [Versi 1.1.0](CHANGELOG.md)
+React 19 · 36 layar siap pakai · Tanpa CDN atau internet · Lisensi MIT · [Versi 1.2.0](CHANGELOG.md)
 
 ![Mellow Admin: papan kanban Sales pipeline](docs/screenshots/deals-pipeline.jpg)
 
@@ -16,9 +16,9 @@ Cukup ekstrak lalu buka `index.html`. Tidak perlu `npm install`, server, atau ko
 
 - **Tampil beda sejak layar pertama.** Bayangan neumorphic, sentuhan kaca, animasi masuk yang membal lembut, dan 4 palet aksen lengkap memberi identitas visual yang jarang ada di template admin.
 - **Langsung jalan, bahkan offline.** React, CSS, ikon, dan font Nunito Sans sudah dibundel lokal. Tanpa CDN, font eksternal, atau panggilan API.
-- **Ada versi satu file.** `Mellow-Admin-Standalone.html` (±590 KB) memuat seluruh aplikasi dalam satu berkas HTML. Praktis untuk demo ke klien atau lampiran presentasi.
-- **Ringan.** Bundle JavaScript, termasuk React dan enam foto kontak, ±144 KB setelah gzip. CSS ±52 KB gzip, sudah termasuk font yang tertanam.
-- **Kode yang mudah dibaca.** Hanya lima berkas sumber, React murni tanpa router, state library, atau framework CSS. Satu orang bisa memahami seluruh alurnya dalam satu sore.
+- **Ada versi satu file.** `Mellow-Admin-Standalone.html` (±730 KB) memuat seluruh aplikasi dalam satu berkas HTML. Praktis untuk demo ke klien atau lampiran presentasi.
+- **Ringan.** Bundle JavaScript, termasuk React dan enam foto kontak, ±175 KB setelah gzip. CSS ±58 KB gzip, sudah termasuk font yang tertanam.
+- **Kode yang mudah dibaca.** Hanya enam berkas sumber, React murni tanpa router, state library, atau framework CSS. Satu orang bisa memahami seluruh alurnya dalam satu sore.
 - **Siap disambungkan ke backend.** Semua perubahan data lewat beberapa fungsi pusat, jadi mengganti `localStorage` dengan API Laravel, Node, atau backend lain cukup di satu tempat.
 
 ---
@@ -113,8 +113,8 @@ Setelah build, muat ulang peramban. Untuk hosting statis, unggah isi folder `dis
 
 ```text
 src/
-  App.jsx          Shell aplikasi, navigasi, state, formulir, dan 10 halaman inti
-  pages.jsx        Halaman tambahan dan layar mandiri (login, error, maintenance)
+  App.jsx          Shell aplikasi, navigasi, state bersama, modal record, dan halaman Deals
+  pages.jsx        Semua halaman lain dan layar mandiri (login, error, maintenance)
   forms.jsx        Tujuh halaman kelompok Forms (elemen, layout, validasi, wizard, editor, unggah)
   components.jsx   Komponen UI: Icon, Button, Menu, Modal, Field, StatCard, RevenueChart, ...
   data.js          Data contoh, paket harga, FAQ, dan format angka
@@ -133,10 +133,10 @@ CHANGELOG.md       Riwayat perubahan per versi
 | Ingin… | Caranya |
 |---|---|
 | Mengganti warna merek | Ubah token di `:root` pada `src/styles.css`: warna merek (`--accent*`, `--primary-a/b`, `--sidebar-a/b`), latar (`--bg-*`), permukaan dan teks, `--shade`, grafik (`--bar*`), kartu statistik pertama (`--stat-1*`), dan avatar pertama (`--tone-0*`). Pastikan teks putih di tombol dan sidebar tetap berkontras minimal 4,5:1 |
-| Menambah aksen warna | Tambahkan nama aksen ke daftar swatch di halaman Settings (`App.jsx`) dan buat `.swatch.nama` di CSS. Lalu salin blok `[data-accent=rose]` dan `[data-theme=dark][data-accent=rose]` sebagai contoh, dan ganti semua nilainya |
+| Menambah aksen warna | Tambahkan nama aksen ke daftar swatch di halaman Settings (`src/pages.jsx`) dan buat `.swatch.nama` di CSS. Lalu salin blok `[data-accent=rose]` dan `[data-theme=dark][data-accent=rose]` sebagai contoh, dan ganti semua nilainya |
 | Mengatur animasi masuk | Ubah durasi atau kurva pada aturan `enter-*` dan token `--ease-out`/`--ease-spring` di `src/styles.css`. Animasi hanya berlaku pada elemen yang tercantum di daftar selektornya, jadi jenis kartu atau baris baru perlu ditambahkan ke daftar itu agar ikut beranimasi |
 | Memakai Rupiah | Ubah helper `money` dan `short` di `src/data.js`, lalu sesuaikan nilai data contoh |
-| Menambah halaman | Tambahkan entri ke array `nav` (label, ikon, kelompok), lalu render komponennya di `App.jsx`. Halaman formulir cukup ditambahkan ke daftar `forms` di `src/forms.jsx` |
+| Menambah halaman | Tambahkan entri ke array `nav` (label, ikon, kelompok), lalu render komponennya di `App.jsx` (komponen halaman biasanya diletakkan di `src/pages.jsx`). Halaman formulir cukup ditambahkan ke daftar `forms` di `src/forms.jsx` |
 | Mengganti data contoh | Edit `seed` di `src/data.js`, build ulang, lalu klik **Settings → Reset demo data** |
 | Menerjemahkan antarmuka | Teks UI ada di `App.jsx`, `pages.jsx`, `forms.jsx`, dan `components.jsx` |
 
@@ -173,7 +173,7 @@ Kami ingin Anda tahu persis apa yang Anda dapatkan:
 
 ## Lisensi
 
-Kode template dirilis dengan [Lisensi MIT](LICENSE.txt): bebas dipakai, dimodifikasi, dan dijual kembali sebagai bagian dari proyek Anda. Lisensi React, React DOM, Scheduler, esbuild, dan font Nunito Sans (SIL OFL 1.1) tercantum di [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt).
+Kode template © 2026 Syams Ideris, dirilis dengan [Lisensi MIT](LICENSE.txt): bebas dipakai, dimodifikasi, dan dijual kembali sebagai bagian dari proyek Anda. Lisensi React, React DOM, Scheduler, dan font Nunito Sans (SIL OFL 1.1) yang ikut dibundel tercantum di [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt).
 
 ---
 

@@ -1,20 +1,29 @@
-VALIDASI MELLOW ADMIN 1.0.0
+VALIDASI MELLOW ADMIN 1.2.0
+3 November 2026 · Google Chrome 156 di macOS
 
 Berhasil:
-- Build production React dengan esbuild.
-- Navigasi dan render seluruh 10 halaman di Chromium.
-- Tambah deal USD 5.000 dan penyesuaian total pipeline.
-- Pindah tahap melalui select, termasuk Won.
-- Filter pencarian dan pemuatan ulang dengan data tersimpan.
-- Edit dialog, konfirmasi hapus, dan penghapusan data uji.
-- Layout iframe viewport 390 px (area isi 375 px setelah scrollbar).
-- Lebar body sama dengan scrollWidth pada viewport seluler.
-- Navigasi dock seluler dan perubahan tahap di viewport seluler.
-- Toggle dark mode dan kembali ke light mode.
-- Validasi angka seed dan pemeriksaan integritas ZIP.
+- Build production dengan esbuild bisa diulang: build ulang dari sumber
+  menghasilkan berkas yang identik byte demi byte dengan yang ada di paket.
+- Seluruh 36 layar (29 halaman sidebar dan 7 layar mandiri) terbuka tanpa
+  error atau warning di konsol. Alamat yang tidak dikenal menampilkan Error 404.
+- Tidak ada geser menyamping di semua layar pada lebar 1440, 900, dan 390 px.
+- Grafik Monthly revenue di Reports (3M, 6M, 12M) tetap di dalam panel pada
+  lebar 414, 390, 360, dan 320 px, tanpa label bulan yang bertumpuk.
+- Mellow-Admin-Standalone.html berjalan tanpa memuat satu pun berkas luar.
+  dist/index.html berjalan dengan folder assets miliknya.
+- Tambah deal USD 5.000 tersimpan di localStorage. Delete langsung menghapus
+  deal dan menampilkan toast Undo, dan Undo mengembalikan deal tersebut.
+- Angka seed: pipeline $258.500, forecast $126.875, Won $101.000,
+  rata-rata $29.958,33.
+- Mode gelap dengan aksen navy, aksen rose, dan tampilan ponsel tampil benar
+  (dipakai untuk screenshot galeri di docs/screenshots).
+- Tidak ada gambar yang gagal dimuat. Label versi di sidebar muat satu baris.
 
 Batas pemeriksaan:
 - Tidak diuji pada perangkat fisik Android/iOS atau peramban Safari/Firefox.
-- Drag-and-drop menggunakan native HTML5. Pemindahan tahap melalui select diuji.
+  Lebar ponsel diuji lewat iframe di Chrome desktop.
+- Drag-and-drop kanban memakai HTML5 native dan tidak diuji pada pemeriksaan ini.
+- Halaman Forms (wizard, validasi, editor, unggah) diperiksa tampil tanpa error,
+  tetapi alurnya belum diuji langkah demi langkah.
 - Tidak ada backend, email nyata, atau pembayaran eksternal untuk diuji.
 - Grafik historis adalah ilustrasi, bukan hasil agregasi dari invoice.

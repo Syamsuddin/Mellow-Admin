@@ -2,7 +2,9 @@
 
 Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/), dan penomoran versinya mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
-## [Belum dirilis]
+## [1.2.0] - 2026-11-03
+
+Rilis fitur: dua varian dashboard (Analytics dan eCommerce), kelompok menu Forms dengan tujuh halaman, Dashboard dan semua halaman lain dengan tata letak penuh, layar mandiri yang lebih kaya, palet lengkap per warna aksen, dan animasi masuk. Totalnya 36 layar. Data demo yang sudah tersimpan di browser tetap terbaca tanpa perlu reset, tetapi data contoh baru untuk koleksi yang sudah tersimpan, misalnya kontak keenam, baru muncul setelah Settings → Reset demo data.
 
 ### Ditambahkan
 
@@ -78,9 +80,13 @@ Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengiku
 - Kartu statistik dan avatar memakai slot warna. Slot pertama mengikuti aksen. Slot pendamping yang terlalu mirip aksen diganti: rose memakai mint dan lavender, sage memakai lavender, dan navy memakai mint dan lavender. `StatCard` kini menerima `tone="s1"`…`"s4"`, bukan nama warna.
 - Swatch di Settings menampilkan gradien sidebar aksen yang sebenarnya, dan warna `theme-color` browser mengikuti aksen.
 - Token baru di `src/styles.css`: `--bg-glow/-a/-b`, `--shade`, `--shade-deep`, `--bar`, `--bar-active`, `--stat-1…4` (dengan `-icon` dan `-fg`), serta `--tone-0…3` (dengan `-fg`). `--stat-lavender/coral/peach/blue` dihapus.
+- Label versi di bawah sidebar kini dibaca dari `package.json`, sehingga selalu sama dengan versi paket, dan memakai versi lengkap (`V1.2.0`). Jarak hurufnya dirapatkan dari 0,9 px ke 0,5 px agar tetap satu baris.
+- Lisensi MIT kini atas nama Syams Ideris. Berkas `LICENSE` yang isinya dobel dihapus; `LICENSE.txt` menjadi satu-satunya berkas lisensi.
+- Dokumentasi: `README.md`, `README.txt`, `PANDUAN.html`, dan `QA.txt` diperbarui ke versi 1.2.0, termasuk ukuran berkas, daftar halaman, perilaku hapus dengan Undo, dan screenshot galeri.
 
 ### Diperbaiki
 
+- Di layar ponsel, grafik Monthly revenue di Reports pada rentang 12M melebar keluar panel dan membuat halaman bisa digeser ke samping. Di lebar 760 px ke bawah, jarak antarbatang kini lebih rapat, dan bila ada lebih dari delapan batang hanya label bulan selang-seling yang ditampilkan, dihitung dari bulan terakhir.
 - Di mode gelap, sidebar, latar belakang, dan `--accent-light` selalu ungu, apa pun aksen yang dipilih.
 - Di mode gelap, track switch dalam posisi mati hampir tidak terlihat.
 - Di layar mandiri, tulisan "mellow." pada logo hilang di lebar 1000 px ke bawah.
@@ -140,4 +146,5 @@ Rilis perbaikan UI/UX hasil audit desain, mencakup keterbacaan, navigasi, design
 
 Rilis awal: template dashboard CRM React 19 bergaya clay & glass, dengan 20 halaman, 7 layar mandiri, data demo di `localStorage`, tema gelap, empat warna aksen, ekspor CSV, dan versi standalone satu file.
 
+[1.2.0]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.1.0

@@ -1,4 +1,4 @@
-MELLOW ADMIN 1.1.0
+MELLOW ADMIN 1.2.0
 Template Dashboard Admin, Clay & Glass Edition
 
 MULAI
@@ -12,20 +12,25 @@ ISI
 index.html                     Halaman utama siap buka
 assets/app.js                  React dan aplikasi hasil build, semua lokal
 assets/app.css                 CSS hasil build
+assets/app.js.LEGAL.txt        Komentar lisensi dari bundle JavaScript
 assets/favicon.svg             Ikon aplikasi
-Mellow-Admin-Standalone.html    Versi satu HTML dengan CSS dan JS tertanam
-src/App.jsx                    Halaman, state, navigasi, dan interaksi
+dist/                          Salinan index.html dan assets/ siap unggah ke hosting
+Mellow-Admin-Standalone.html   Versi satu HTML dengan CSS dan JS tertanam
+src/App.jsx                    Shell, state, navigasi, modal record, halaman Deals
 src/components.jsx             Komponen UI reusable
-src/pages.jsx                  Halaman tambahan dan layar mandiri (login, error)
+src/pages.jsx                  Semua halaman lain dan layar mandiri (login, error)
 src/forms.jsx                  Tujuh halaman kelompok Forms
 src/data.js                    Data contoh, tahap, dan format angka
 src/styles.css                 Desain, breakpoint, tema, dan cetak
+src/photos/                    Foto kontak contoh (fiktif, dibuat dengan AI)
 build.mjs                      Build sumber React dan versi standalone
 package.json                   Dependensi terkunci versinya
 package-lock.json              Lockfile untuk npm ci
-PANDUAN.html                    Panduan berbahasa Indonesia
-LICENSE.txt                    Lisensi kode template
-THIRD-PARTY-NOTICES.txt         Lisensi dependensi
+PANDUAN.html                   Panduan berbahasa Indonesia
+README.md                      Pengenalan, fitur, dan kustomisasi
+docs/screenshots/              Gambar galeri untuk README.md
+LICENSE.txt                    Lisensi MIT kode template (c) 2026 Syams Ideris
+THIRD-PARTY-NOTICES.txt        Lisensi dependensi
 QA.txt                         Cakupan pemeriksaan
 CHANGELOG.md                   Riwayat perubahan per versi
 
@@ -50,7 +55,7 @@ Pemindahan tahap lewat select atau modal untuk ponsel dan keyboard.
 Ringkasan pipeline dihitung dari data. Grafik revenue historis adalah ilustrasi.
 Filter per halaman (tekan /), ekspor CSV, tandai invoice dibayar, cetak invoice.
 Menu aksi per kartu. Hapus record langsung dengan tombol Undo pada toast.
-Balasan inbox disimpan lokal. Tema gelap, 3 warna aksen, mode kartu ringkas.
+Balasan inbox disimpan lokal. Tema gelap, 4 warna aksen, mode kartu ringkas.
 
 PENGEMBANGAN
 Gunakan Node.js 20 atau lebih baru dan npm.
