@@ -1,10 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { money, short, fmtDate, initials, photos, profilePhoto, plans, receipts, faq, stages, chances, revenue, engagement, quarterTarget, store, traffic } from "./data";
-import { Icon, Button, Avatar, Badge, Empty, StatCard, Menu, Field, TrendChart, Gauge, Ring, SegmentBar, Heatmap, Columns, BarList, Breakdown, RevenueChart, Sparkline } from "./components";
+import { Icon, Button, Avatar, Badge, Empty, StatCard, Menu, Field, TrendChart, Gauge, Ring, SegmentBar, Heatmap, Columns, BarList, Breakdown, RevenueChart, Sparkline, paths } from "./components";
 const today = () => new Date().toISOString().slice(0, 10);
 const statusTone = { Active: "success", Delivered: "success", "On track": "success", Completed: "success", Paid: "success", Shipped: "low", Processing: "low", Invited: "low", Pending: "medium", "At risk": "high", "Out of stock": "high", Cancelled: "high", Overdue: "high", Inactive: "", Archived: "", Viewer: "" };
 const Segmented = ({ options, value, onChange, label = "Filter" }) => <div className="segmented" role="group" aria-label={label}>{options.map((o) => <button key={o} className={value === o ? "selected" : ""} aria-pressed={value === o} onClick={() => onChange(o)}>{o}</button>)}</div>;
 const confirmRemove = (ctx, key, row, label) => ctx.remove(key, row, label);
+async function copy(text, setToast, done) {
+  try {
+    await navigator.clipboard.writeText(text);
+    setToast(done);
+  } catch {
+    setToast("The browser blocked the clipboard. Select the text and copy it.", { tone: "error" });
+  }
+}
 const localDay = (n = new Date()) => n.getFullYear() + "-" + String(n.getMonth() + 1).padStart(2, "0") + "-" + String(n.getDate()).padStart(2, "0");
 const daysTo = (d) => Math.round((new Date(d.slice(0, 10) + "T12:00:00") - new Date(localDay() + "T12:00:00")) / 864e5);
 const dueLabel = (n) => n === 0 ? "today" : n === 1 ? "tomorrow" : n > 0 ? "in " + n + " days" : n === -1 ? "1 day late" : -n + " days late";
@@ -552,6 +560,49 @@ function Pages(ctx) {
  <Panel span={4} title="Shared building blocks" sub="Reused across the seven layouts"><BarList label="Building blocks by number of layouts that use them" items={blocks.map(([label, sub, value]) => ({ label, sub, value }))} format={(v) => plural(v, "layout")} /></Panel>
  </div></>;
 }
+const iconGroups = [["Navigation", ["home", "menu", "grid", "layout", "layers", "arrow", "chevron", "dots", "search", "globe", "sliders", "steps"]], ["Actions", ["plus", "minus", "close", "tick", "check", "edit", "trash", "copy", "download", "upload", "refresh", "undo", "redo", "link"]], ["People", ["people", "user", "contact", "message", "mail", "bell"]], ["Business", ["briefcase", "chart", "activity", "trophy", "target", "calendar", "clock", "file", "folder", "cart", "box", "bag", "card"]], ["System", ["settings", "lock", "key", "shield", "eye", "eyeOff", "alert", "info", "help", "sun", "logout", "sparkle", "star"]], ["Editor", ["type", "list", "olist", "quote", "code", "input", "eraser", "play", "pause"]]];
+const iconSets = (() => {
+  const known = iconGroups.flatMap(([, xs]) => xs), other = Object.keys(paths).filter((n) => !known.includes(n));
+  return [...iconGroups.map(([g, xs]) => [g, xs.filter((n) => paths[n])]), ...other.length ? [["Other", other]] : []];
+})();
+const strokeAttrs = 'fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+function IconSet(ctx) {
+  const { pageHead, query, setToast } = ctx, q = query.trim().toLowerCase(), total = Object.keys(paths).length;
+  const [kind, setKind] = useState("All"), [size, setSize] = useState("24 px"), [sel, setSel] = useState("sparkle"), px = parseInt(size);
+  const sets = iconSets.filter(([g]) => kind === "All" || g === kind).map(([g, xs]) => [g, xs.filter((n) => (n + " " + g).toLowerCase().includes(q))]).filter(([, xs]) => xs.length);
+  const shown = sets.flatMap(([, xs]) => xs), group = iconSets.find(([, xs]) => xs.includes(sel))[0], focus = shown.includes(sel) ? sel : shown[0];
+  const jsx = (n) => '<Icon name="' + n + '"' + (px === 20 ? "" : " size={" + px + "}") + " />";
+  const copyJsx = (n) => copy(jsx(n), setToast, "Copied " + jsx(n));
+  const sprite = () => {
+    const symbols = Object.keys(paths).map((n) => '  <symbol id="icon-' + n + '" viewBox="0 0 24 24"><path d="' + paths[n] + '" ' + strokeAttrs + "/></symbol>");
+    const url = URL.createObjectURL(new Blob(['<svg xmlns="http://www.w3.org/2000/svg">\n' + symbols.join("\n") + "\n</svg>\n"], { type: "image/svg+xml" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "mellow-icons.svg";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1e3);
+    setToast("Sprite with " + plural(total, "icon") + " downloaded");
+  };
+  const step = (e) => {
+    const all = [...e.currentTarget.querySelectorAll(".icon-tile")], i = all.indexOf(e.target);
+    if (i < 0 || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(e.key)) return;
+    e.preventDefault();
+    const box = (b) => b.getBoundingClientRect(), at = box(e.target);
+    let to = { ArrowLeft: all[i - 1], ArrowRight: all[i + 1], Home: all[0], End: all[all.length - 1] }[e.key];
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      const down = e.key === "ArrowDown", row = all.filter((b) => down ? box(b).top > at.bottom - 1 : box(b).bottom < at.top + 1);
+      const y = down ? Math.min(...row.map((b) => box(b).top)) : Math.max(...row.map((b) => box(b).top));
+      to = row.filter((b) => box(b).top === y).sort((a, b) => Math.abs(box(a).left - at.left) - Math.abs(box(b).left - at.left))[0];
+    }
+    if (!to) return;
+    to.focus();
+    setSel(to.dataset.icon);
+  };
+  return <>{pageHead("Every icon in the Icon component. Select one to preview it, or search names with the top-bar filter.", <Button icon="download" onClick={sprite}>Download SVG sprite</Button>)}<div className="stats"><StatCard tone="s1" icon="sparkle" value={total} label="Icons" note="Inline SVG, no icon font" /><StatCard tone="s2" icon="grid" value={iconSets.length} label="Categories" note="Navigation to editor" /><StatCard tone="s3" icon="layout" value="24 px" label="Grid" note="viewBox 0 0 24 24" /><StatCard tone="s4" icon="edit" value="1.8" label="Stroke width" note="Round caps and joins" /></div><div className="filter-bar"><Segmented label="Icon category" options={["All", ...iconSets.map(([g]) => g)]} value={kind} onChange={setKind} /><div className="filter-tools"><Segmented label="Icon size" options={["16 px", "20 px", "24 px", "32 px"]} value={size} onChange={setSize} /><span>{plural(shown.length, "icon")}</span></div></div><div className="dash">
+ <Panel span={8} title={kind === "All" ? "All icons" : kind} sub="Arrow keys move between icons. Double-click copies the JSX.">{sets.length ? <div className="icon-sets" onKeyDown={step}>{sets.map(([g, xs]) => <section className="icon-group" key={g} aria-label={g}><h4>{g}<small>{xs.length}</small></h4><div className="icon-grid">{xs.map((n) => <button key={n} data-icon={n} className={"icon-tile" + (n === sel ? " selected" : "")} aria-pressed={n === sel} tabIndex={n === focus ? 0 : -1} onClick={() => setSel(n)} onDoubleClick={() => copyJsx(n)}><Icon name={n} size={px} /><span>{n}</span></button>)}</div></section>)}</div> : <Empty text="No icons match">Try another name or category.</Empty>}</Panel>
+ <div className="stack span-4 icon-aside"><Panel title="Preview" sub={group + " · stroke scales with size"}><div className="icon-hero"><span className="stat-icon"><Icon name={sel} size={36} /></span><div><code>{sel}</code><Badge>{group}</Badge></div></div><div className="icon-sizes" role="img" aria-label={"The " + sel + " icon at 16, 20, 24, 32, and 48 px"}>{[16, 20, 24, 32, 48].map((s) => <span key={s}><Icon name={sel} size={s} /><small>{s}</small></span>)}</div><div className="icon-tones">{["s1", "s2", "s3", "s4"].map((t) => <span key={t} className={t}><span className="stat-icon"><Icon name={sel} size={22} /></span><small>{t}</small></span>)}</div></Panel><Panel title="Usage" sub={"Icon defaults to 20 px and inherits the text color"}><pre className="code-out">{jsx(sel)}</pre><div className="actions icon-copy"><Button kind="primary" icon="copy" onClick={() => copyJsx(sel)}>Copy JSX</Button><Button icon="code" onClick={() => copy('<svg xmlns="http://www.w3.org/2000/svg" width="' + px + '" height="' + px + '" viewBox="0 0 24 24" ' + strokeAttrs + '><path d="' + paths[sel] + '"/></svg>', setToast, "SVG markup copied")}>Copy SVG</Button></div><div className="icon-context"><small>In context</small><div className="actions"><Button icon={sel} onClick={() => setToast("Example button clicked")}>Button</Button><button className="icon-btn" aria-label={"Example icon button: " + sel} onClick={() => setToast("Example icon button clicked")}><Icon name={sel} size={16} /></button><button className="round-btn" aria-label={"Example round button: " + sel} onClick={() => setToast("Example round button clicked")}><Icon name={sel} /></button></div></div></Panel></div>
+ </div></>;
+}
 const pad = (n) => String(n).padStart(2, "0");
 function useNow(ms = 1e3) {
   const [now, setNow] = useState(Date.now);
@@ -728,6 +779,7 @@ export {
   Ecommerce,
   Files,
   Help,
+  IconSet,
   Inbox,
   Invoices,
   Orders,
@@ -745,6 +797,7 @@ export {
   Submit,
   Tasks,
   Team,
+  copy,
   fileType,
   fmtSize,
   localDay,

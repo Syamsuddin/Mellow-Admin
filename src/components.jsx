@@ -212,5 +212,6 @@ export {
   SegmentBar,
   Sparkline,
   StatCard,
-  TrendChart
+  TrendChart,
+  paths
 };

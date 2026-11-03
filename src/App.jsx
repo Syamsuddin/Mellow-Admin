@@ -2,11 +2,11 @@ import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { seed, stages, chances, money, short, initials, fmtDate, trends, profilePhoto } from "./data";
 import { Icon, Button, Avatar, Badge, StatCard, Menu, Modal, Field } from "./components";
-import { Dashboard, Analytics, Ecommerce, Reports, Contacts, DealInsights, Inbox, Calendar, Tasks, Invoices, Products, Orders, Projects, Files, Team, Activity, Profile, Billing, Settings, Help, Components, Pages, Screen, screens } from "./pages";
+import { Dashboard, Analytics, Ecommerce, Reports, Contacts, DealInsights, Inbox, Calendar, Tasks, Invoices, Products, Orders, Projects, Files, Team, Activity, Profile, Billing, Settings, Help, Components, Pages, IconSet, Screen, screens } from "./pages";
 import { FormPage, forms } from "./forms";
 import { version } from "../package.json";
 import "./styles.css";
-const nav = [["Dashboard", "home", "Overview"], ["Analytics", "globe", "Overview"], ["eCommerce", "bag", "Overview"], ["Reports", "chart", "Overview"], ["Activity", "activity", "Overview"], ["Contacts", "contact", "CRM"], ["Deals", "briefcase", "CRM"], ["Inbox", "message", "CRM"], ["Calendar", "calendar", "CRM"], ["Tasks", "check", "CRM"], ["Products", "box", "Commerce"], ["Orders", "cart", "Commerce"], ["Invoices", "file", "Commerce"], ["Projects", "layers", "Workspace"], ["Files", "folder", "Workspace"], ["Team", "people", "Workspace"], ["Profile", "user", "Account"], ["Billing", "card", "Account"], ["Settings", "settings", "Account"], ["Help", "help", "Account"], ["Components", "grid", "UI kit"], ["Pages", "lock", "UI kit"], ...forms.map(([n, icon]) => [n, icon, "Forms"])];
+const nav = [["Dashboard", "home", "Overview"], ["Analytics", "globe", "Overview"], ["eCommerce", "bag", "Overview"], ["Reports", "chart", "Overview"], ["Activity", "activity", "Overview"], ["Contacts", "contact", "CRM"], ["Deals", "briefcase", "CRM"], ["Inbox", "message", "CRM"], ["Calendar", "calendar", "CRM"], ["Tasks", "check", "CRM"], ["Products", "box", "Commerce"], ["Orders", "cart", "Commerce"], ["Invoices", "file", "Commerce"], ["Projects", "layers", "Workspace"], ["Files", "folder", "Workspace"], ["Team", "people", "Workspace"], ["Profile", "user", "Account"], ["Billing", "card", "Account"], ["Settings", "settings", "Account"], ["Help", "help", "Account"], ["Components", "grid", "UI kit"], ["Pages", "lock", "UI kit"], ["Icon set", "sparkle", "UI kit"], ...forms.map(([n, icon]) => [n, icon, "Forms"])];
 const formNames = forms.map(([n]) => n);
 const slug = (n) => n.toLowerCase().replace(/\s+/g, "-");
 const routes = [...nav.map(([n]) => n), ...screens.map(([n]) => n)];
@@ -267,6 +267,7 @@ function App() {
  {page === "Billing" && <Billing {...ctx} />}
  {page === "Help" && <Help {...ctx} />}
  {page === "Pages" && <Pages {...ctx} />}
+ {page === "Icon set" && <IconSet {...ctx} />}
  {formNames.includes(page) && <FormPage key={page} page={page} {...ctx} />}
  <footer className="content-footer"><span>mellow. <span>A softer way to work.</span></span><span>Demo workspace · Data saved in your browser</span></footer>
  </div><nav className="dock" aria-label="Quick navigation">{["Dashboard", "Contacts", "Deals", "Inbox"].map((n) => <button key={n} className={page === n ? "active" : ""} aria-current={page === n ? "page" : void 0} onClick={() => go(n)}>{n}{n === "Inbox" && unread > 0 && <b>{unread}</b>}</button>)}{creates[page] && <button className="dock-plus" aria-label={"New " + creates[page]} onClick={() => setModal({ type: creates[page] })}><Icon name="plus" size={22} /></button>}</nav>

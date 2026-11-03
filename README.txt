@@ -36,11 +36,11 @@ QA.txt                         Cakupan pemeriksaan
 CHANGELOG.md                   Riwayat perubahan per versi
 
 FITUR
-29 halaman dalam sidebar berkelompok:
+30 halaman dalam sidebar berkelompok:
 Overview: Dashboard, Analytics, eCommerce, Reports, Activity. CRM: Contacts,
 Deals, Inbox, Calendar, Tasks. Commerce: Products, Orders, Invoices.
 Workspace: Projects, Files, Team. Account: Profile, Billing, Settings, Help.
-UI kit: Components, Pages. Forms: Form elements, Advanced inputs,
+UI kit: Components, Pages, Icon set. Forms: Form elements, Advanced inputs,
 Form layouts, Validation, Wizard, Editors, File upload.
 7 layar mandiri tanpa sidebar: Sign in, Sign up, Forgot password, Lock screen,
 Error 404, Error 500, Maintenance. URL tak dikenal menampilkan Error 404.

@@ -2,7 +2,7 @@
 
 **Template dashboard admin bergaya *clay & glass*: lembut di mata, siap dipakai, dan mudah dikembangkan.**
 
-React 19 · 36 layar siap pakai · Tanpa CDN atau internet · Lisensi MIT · [Versi 1.2.0](CHANGELOG.md)
+React 19 · 37 layar siap pakai · Tanpa CDN atau internet · Lisensi MIT · [Versi 1.2.0](CHANGELOG.md)
 
 ![Mellow Admin: papan kanban Sales pipeline](docs/screenshots/deals-pipeline.jpg)
 
@@ -35,7 +35,7 @@ Cukup ekstrak lalu buka `index.html`. Tidak perlu `npm install`, server, atau ko
 
 ## Fitur
 
-### 36 layar siap pakai
+### 37 layar siap pakai
 
 Sidebar dikelompokkan seperti template admin profesional:
 
@@ -46,7 +46,7 @@ Sidebar dikelompokkan seperti template admin profesional:
 | **Commerce** | Products, Orders, Invoices |
 | **Workspace** | Projects, Files, Team |
 | **Account** | Profile, Billing, Settings, Help |
-| **UI kit** | Components, Pages |
+| **UI kit** | Components, Pages, Icon set |
 | **Forms** | Form elements, Advanced inputs, Form layouts, Validation, Wizard, Editors, File upload |
 
 Ditambah **7 layar mandiri** tanpa sidebar: Sign in, Sign up, Forgot password, Lock screen, Error 404, Error 500, dan Maintenance. Alamat yang tidak dikenal otomatis menampilkan halaman 404. Setiap layar punya komponen dan animasinya sendiri: carousel dan tombol tampilkan sandi di Sign in, meter kekuatan sandi di Sign up, kode 6 digit di Forgot password, jam berjalan di Lock screen, pencarian halaman di 404, status layanan dengan coba ulang otomatis di 500, dan hitung mundur di Maintenance.

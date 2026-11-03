@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useRef, useId } from "react";
 import { fmtDate, initials, stages, money, short } from "./data";
 import { Icon, Button, Avatar, Badge, Empty, Field, Ring, Breakdown, StatCard } from "./components";
-import { Panel, Segmented, Password, Strength, rules, Submit, plural, fmtSize, fileType, localDay } from "./pages";
+import { Panel, Segmented, Password, Strength, rules, Submit, plural, fmtSize, fileType, localDay, copy } from "./pages";
 const shift = (n) => {
   const d = /* @__PURE__ */ new Date();
   d.setDate(d.getDate() + n);
@@ -15,14 +15,6 @@ const keep = (e) => e.preventDefault();
 const Hint = ({ id, tone = "", children }) => <small id={id} className={"hint" + (tone ? " " + tone : "")}>{tone && <Icon name={{ error: "alert", success: "tick", warning: "info" }[tone]} size={13} />}{children}</small>;
 const F = ({ label, full, children, ...props }) => <label className={"field" + (full ? " full" : "")}><span>{label}</span>{children || <input {...props} />}</label>;
 const Group = ({ label, id, hint, children }) => <div className="field"><label htmlFor={id}>{label}</label><div className="input-group">{children}</div>{hint}</div>;
-async function copy(text, setToast, done) {
-  try {
-    await navigator.clipboard.writeText(text);
-    setToast(done);
-  } catch {
-    setToast("The browser blocked the clipboard. Select the text and copy it.", { tone: "error" });
-  }
-}
 function roam(e) {
   if (e.key !== "ArrowLeft" && e.key !== "ArrowRight" || e.target.tagName === "SELECT") return;
   const all = [...e.currentTarget.querySelectorAll("button, select")], i = all.indexOf(e.target);
