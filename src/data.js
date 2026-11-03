@@ -31,19 +31,31 @@ const seed = {
 const plans = [{ name: "Starter", price: 0, note: "For solo users", features: ["1 workspace", "Up to 50 deals", "Email support"] }, { name: "Pro", price: 29, note: "For growing teams", features: ["Unlimited deals", "Team roles", "Reports & CSV export", "Priority support"] }, { name: "Business", price: 79, note: "For larger organizations", features: ["Everything in Pro", "Audit log", "SSO & 2FA", "Dedicated manager"] }];
 const receipts = [{ id: "RCPT-2026-11", date: "2026-11-01", plan: "Pro", amount: 29, status: "Paid" }, { id: "RCPT-2026-10", date: "2026-10-01", plan: "Pro", amount: 29, status: "Paid" }, { id: "RCPT-2026-09", date: "2026-09-01", plan: "Starter", amount: 0, status: "Paid" }];
 const faq = [["How is demo data stored?", "Every record is saved in this browser's localStorage under the key mellow-admin-v1. Nothing is sent to a server."], ["Can I connect a real backend?", "Yes. Replace the local state helpers (saveRecord, patch, move, remove) in App.jsx with API calls and keep the UI as it is."], ["How do I reset the demo?", "Open Settings and choose Reset demo data. The original sample records are restored."], ["Does drag-and-drop work on mobile?", "Dragging uses native HTML5 events, which touch devices do not support. Use the Move to select on each deal card instead."], ["How do I change the accent color or theme?", "Settings \u2192 Appearance offers violet, rose, sage, and navy accents, plus dark and compact modes."], ["Are the login and register pages functional?", "They are layout demos. Connect them to your authentication backend before use."]];
+const revenue = { months: ["Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"], actual: [24, 27, 30, 35, 33, 38, 32, 48, 43, 58, 74, 101], target: [30, 32, 34, 36, 38, 40, 44, 48, 52, 58, 64, 72] };
+const trends = [[0.72, 0.78, 0.74, 0.83, 0.8, 0.88, 0.9, 1], [0.8, 0.76, 0.84, 0.82, 0.9, 0.86, 0.95, 1], [0.35, 0.42, 0.42, 0.55, 0.6, 0.6, 0.78, 1], [1.08, 1.04, 1.1, 1.02, 0.98, 1.03, 1.05, 1]];
+const quarterTarget = 25e4;
+const engagement = Array.from({ length: 364 }, (_, i) => {
+  const d = new Date(2025, 10, 10 + i), date = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  const r = Math.abs(Math.sin(i * 12.9898 + 4.1) * 43758.5453) % 1;
+  return { date, value: date > "2026-11-03" ? null : Math.round((i % 7 < 5 ? 3 + r * 12 : r * 4) * (0.75 + i / 728)) };
+});
 const money = (n) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
 const short = (n) => Math.abs(n) < 1e3 ? money(n) : "$" + (n / 1e3).toLocaleString("en-US", { maximumFractionDigits: 1 }) + "K";
 const initials = (name) => name.split(/\s+/).map((s) => s[0]).slice(0, 2).join("").toUpperCase();
 const fmtDate = (date) => (/* @__PURE__ */ new Date(date + "T12:00:00")).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 export {
   chances,
+  engagement,
   faq,
   fmtDate,
   initials,
   money,
   plans,
+  quarterTarget,
   receipts,
+  revenue,
   seed,
   short,
-  stages
+  stages,
+  trends
 };

@@ -16,9 +16,107 @@ function Badge({ children, tone = "" }) {
 function Empty({ text = "No results found", children }) {
   return <div className="empty"><Icon name="search" size={28} /><h3>{text}</h3><p>{children || "Try another search or add a new record."}</p></div>;
 }
-function StatCard({ icon, label, value, tone, note, onClick }) {
-  const body = <><span className="stat-icon"><Icon name={icon} size={24} /></span><span><strong>{value}</strong><span className="stat-label">{label}</span>{note && <small>{note}</small>}</span></>;
-  return onClick ? <button className={"stat " + tone} onClick={onClick}>{body}<span className="stat-arrow"><Icon name="arrow" size={14} /></span></button> : <div className={"stat " + tone}>{body}</div>;
+function StatCard({ icon, label, value, tone, note, onClick, trend, delta }) {
+  const body = <><span className="stat-icon"><Icon name={icon} size={24} /></span><span>{delta == null ? <strong>{value}</strong> : <span className="stat-value"><strong>{value}</strong><em className={"delta" + (delta < 0 ? " down" : "")} title="Versus last week (sample trend)"><Icon name="arrow" size={12} />{Math.abs(delta)}%<span className="sr-only">{delta < 0 ? " down" : " up"} versus last week</span></em></span>}<span className="stat-label">{label}</span>{note && <small>{note}</small>}</span>{trend && <Sparkline values={trend} />}</>;
+  const cls = "stat " + tone + (trend ? " has-trend" : "");
+  return onClick ? <button className={cls} onClick={onClick}>{body}<span className="stat-arrow"><Icon name="arrow" size={14} /></span></button> : <div className={cls}>{body}</div>;
+}
+function useWidth() {
+  const ref = React.useRef(), [width, setWidth] = React.useState(0);
+  React.useLayoutEffect(() => {
+    const el = ref.current, ro = new ResizeObserver(() => setWidth(el.clientWidth));
+    setWidth(el.clientWidth);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  return [ref, width];
+}
+function smooth(pts) {
+  const n = pts.length, d = [], m = [], f = (v) => Math.round(v * 10) / 10;
+  if (n < 3) return "M" + pts.map((p) => p.map(f).join(",")).join("L");
+  for (let i = 0; i < n - 1; i++) d.push((pts[i + 1][1] - pts[i][1]) / (pts[i + 1][0] - pts[i][0]));
+  m.push(d[0]);
+  for (let i = 1; i < n - 1; i++) m.push(d[i - 1] * d[i] <= 0 ? 0 : (d[i - 1] + d[i]) / 2);
+  m.push(d[n - 2]);
+  for (let i = 0; i < n - 1; i++) {
+    if (!d[i]) {
+      m[i] = m[i + 1] = 0;
+      continue;
+    }
+    const a = m[i] / d[i], b = m[i + 1] / d[i], s = a * a + b * b;
+    if (s > 9) {
+      m[i] = 3 / Math.sqrt(s) * a * d[i];
+      m[i + 1] = 3 / Math.sqrt(s) * b * d[i];
+    }
+  }
+  return pts.reduce((p, [x, y], i) => {
+    if (!i) return "M" + f(x) + "," + f(y);
+    const [x0, y0] = pts[i - 1], h = (x - x0) / 3;
+    return p + "C" + f(x0 + h) + "," + f(y0 + m[i - 1] * h) + " " + f(x - h) + "," + f(y - m[i] * h) + " " + f(x) + "," + f(y);
+  }, "");
+}
+function Sparkline({ values }) {
+  const lo = Math.min(...values), hi = Math.max(...values), n = values.length;
+  const pts = values.map((v, i) => [i / (n - 1) * 100, 26 - (hi > lo ? (v - lo) / (hi - lo) : 0.5) * 22]), d = smooth(pts);
+  return <span className="spark" aria-hidden="true"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><path d={d + "L100,30L0,30Z"} /><path d={d} vectorEffect="non-scaling-stroke" /></svg><i style={{ top: pts[n - 1][1] / 30 * 100 + "%" }} /></span>;
+}
+function TrendChart({ labels, series, height = 272, format = (v) => "$" + v + "K", label }) {
+  const [ref, width] = useWidth(), [at, setAt] = React.useState(null);
+  const n = labels.length, max = Math.max(1, ...series.flatMap((s) => s.values));
+  const step = [5, 10, 20, 25, 40, 50, 100, 200, 250, 500].find((s) => s * 4 >= max) || Math.ceil(max / 400) * 100, top = Math.ceil(max / step) * step;
+  const L = 48, R = 56, T = 12, B = 32, w = Math.max(width - L - R, 1), h = height - T - B, gap = w / Math.max(n - 1, 1);
+  const x = (i) => L + (n > 1 ? i * gap : w / 2), y = (v) => T + h - v / top * h;
+  const every = gap < 34 ? 2 : 1, endY = series.map((s) => y(s.values[n - 1])), keep = endY.map((e, i) => !endY.some((f, j) => j > i && Math.abs(f - e) < 16));
+  const keys = (e) => {
+    const next = { ArrowLeft: -1, ArrowRight: 1 }[e.key];
+    if (next) {
+      e.preventDefault();
+      setAt((i) => Math.max(0, Math.min(n - 1, (i ?? n - 1) + next)));
+    } else if (e.key === "Home" || e.key === "End") {
+      e.preventDefault();
+      setAt(e.key === "Home" ? 0 : n - 1);
+    } else if (e.key === "Escape") setAt(null);
+  };
+  return <div ref={ref} className="chart" style={{ height }} tabIndex="0" role="img" aria-label={label + ": " + labels.map((m, i) => m + " " + series.map((s) => s.label.toLowerCase() + " " + format(s.values[i])).join(", ")).join("; ")} onKeyDown={keys} onFocus={() => setAt(n - 1)} onBlur={() => setAt(null)}>{width > 0 && <svg width={width} height={height} aria-hidden="true" onPointerMove={(e) => setAt(Math.max(0, Math.min(n - 1, Math.round((e.clientX - e.currentTarget.getBoundingClientRect().left - L) / gap))))} onPointerLeave={() => setAt(null)}>{Array.from({ length: top / step + 1 }, (_, i) => i * step).map((t) => <g key={t}><line className="grid-line" x1={L} x2={width - R + 12} y1={y(t)} y2={y(t)} /><text x={L - 12} y={y(t) + 4} textAnchor="end">{t ? format(t) : "$0"}</text></g>)}{labels.map((m, i) => (n - 1 - i) % every === 0 && <text key={m + i} x={x(i)} y={height - 8} textAnchor="middle">{m}</text>)}{series.map((s, k) => {
+    const pts = s.values.map((v, i) => [x(i), y(v)]), d = smooth(pts), [ex, ey] = pts[n - 1];
+    return <g className={"series " + s.tone} key={s.label}>{s.area && <path className="trend-area" d={d + "L" + ex + "," + y(0) + "L" + pts[0][0] + "," + y(0) + "Z"} />}<path className="trend-line" d={d} pathLength="1" /><circle className="trend-end" cx={ex} cy={ey} r="4" />{keep[k] && <text className="trend-label" x={ex + 10} y={ey + 4}>{format(s.values[n - 1])}</text>}</g>;
+  })}{at != null && <g className="crosshair"><line x1={x(at)} x2={x(at)} y1={T} y2={y(0)} />{series.map((s) => <circle key={s.label} className={s.tone} cx={x(at)} cy={y(s.values[at])} r="5" />)}</g>}</svg>}{at != null && width > 0 && <div className="chart-tip" style={{ left: x(at), transform: at > (n - 1) / 2 ? "translateX(calc(-100% - 12px))" : "translateX(12px)" }}><small>{labels[at]}</small>{[...series].reverse().map((s) => <span key={s.label} className={s.tone}><i /><b>{format(s.values[at])}</b><em>{s.label}</em></span>)}</div>}</div>;
+}
+function Gauge({ value, extra = 0, label }) {
+  const arc = "M20 100A80 80 0 0 1 180 100", pct = (v) => Math.max(0, Math.min(100, v * 100));
+  return <svg className="gauge" viewBox="0 0 200 110" role="img" aria-label={label}><path className="gauge-track" d={arc} />{pct(value + extra) > 0 && <path className="k-soft" d={arc} pathLength="100" style={{ strokeDasharray: pct(value + extra) + " 100" }} />}{pct(value) > 0 && <path className="k-accent" d={arc} pathLength="100" style={{ strokeDasharray: pct(value) + " 100" }} />}</svg>;
+}
+function Ring({ value, size = 64, stroke = 6, tone = "k-accent", label, children }) {
+  const c = size / 2, r = c - stroke / 2;
+  return <span className={"ring " + tone} style={{ width: size, height: size }} role="img" aria-label={label}><svg viewBox={"0 0 " + size + " " + size} aria-hidden="true"><circle cx={c} cy={c} r={r} strokeWidth={stroke} />{value > 0 && <circle className="ring-fill" cx={c} cy={c} r={r} strokeWidth={stroke} pathLength="100" transform={"rotate(-90 " + c + " " + c + ")"} style={{ strokeDasharray: Math.min(value, 100) + " 100" }} />}</svg><b aria-hidden="true">{children}</b></span>;
+}
+function SegmentBar({ parts, label }) {
+  return <div className="segment-bar" role="img" aria-label={label}>{parts.filter((p) => p.value > 0).map((p) => <span key={p.label} className={p.tone} style={{ flexGrow: p.value }} />)}</div>;
+}
+const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+function Heatmap({ days, unit = "events" }) {
+  const [ref, width] = useWidth(), [at, setAt] = React.useState(null);
+  const all = days.length / 7, weeks = Math.max(8, Math.min(all, Math.floor((width - 40) / 22))), cells = days.slice((all - weeks) * 7);
+  const max = Math.max(1, ...days.map((d) => d.value || 0)), last = cells.map((d) => d.value != null).lastIndexOf(true);
+  const day = (d, opts) => new Date(d.date + "T12:00:00").toLocaleDateString("en-US", opts);
+  const total = cells.reduce((a, d) => a + (d.value || 0), 0), byDay = weekdays.map((_, i) => cells.filter((_, n) => n % 7 === i).reduce((a, d) => a + (d.value || 0), 0));
+  const avg = byDay.map((t, i) => Math.round(t / Math.max(1, cells.filter((d, n) => n % 7 === i && d.value != null).length) * 10) / 10), busy = avg.indexOf(Math.max(...avg));
+  const peak = cells.reduce((a, d) => (d.value || 0) > (a.value || 0) ? d : a, cells[0]);
+  const cw = (width - 28 - 4 * weeks) / weeks;
+  const keys = (e) => {
+    const next = { ArrowLeft: -7, ArrowRight: 7, ArrowUp: -1, ArrowDown: 1 }[e.key];
+    if (next) {
+      e.preventDefault();
+      setAt((i) => {
+        const j = (i ?? last) + next;
+        return j >= 0 && j <= last ? j : i ?? last;
+      });
+    } else if (e.key === "Escape") setAt(null);
+  };
+  return <div className="heatmap-wrap"><div ref={ref} className="heatmap" style={{ gridTemplateColumns: "28px repeat(" + weeks + ", minmax(0, 1fr))" }} tabIndex="0" role="img" aria-label={total.toLocaleString("en-US") + " " + unit + " in the last " + weeks + " weeks. Busiest weekday: " + weekdays[busy] + ". Peak: " + peak.value + " on " + day(peak, { month: "long", day: "numeric" }) + "."} onKeyDown={keys} onFocus={() => setAt(last)} onBlur={() => setAt(null)} onPointerMove={(e) => e.target.dataset.i && setAt(Number(e.target.dataset.i))} onPointerLeave={() => setAt(null)}>{width > 0 && <><span />{["Mon", "", "Wed", "", "Fri", "", ""].map((d, i) => <span key={i}>{d}</span>)}{Array.from({ length: weeks }, (_, w) => {
+    const first = cells[w * 7], prev = cells[w * 7 - 7], month = !prev ? Number(first.date.slice(8)) <= 10 : first.date.slice(5, 7) !== prev.date.slice(5, 7);
+    return <React.Fragment key={first.date}><span>{month ? day(first, { month: "short" }) : ""}</span>{cells.slice(w * 7, w * 7 + 7).map((d, n) => <i key={d.date} data-i={d.value == null ? void 0 : w * 7 + n} style={{ "--w": w }} className={"hm " + (d.value == null ? "none" : "l" + (d.value ? Math.ceil(d.value / max * 4) : 0)) + (at === w * 7 + n ? " active" : "")} />)}</React.Fragment>;
+  })}</>}</div>{at != null && width > 0 && <div className="chart-tip above" style={{ left: Math.min(Math.max(28 + 4 + Math.floor(at / 7) * (cw + 4) + cw / 2, 64), width - 64), top: 24 + at % 7 * (cw + 4) - 6 }}><b>{cells[at].value} {unit}</b><small>{day(cells[at], { weekday: "short", month: "short", day: "numeric" })}</small></div>}<div className="heatmap-foot"><span><b>{total.toLocaleString("en-US")}</b> {unit} in the last {weeks} weeks · busiest on {weekdays[busy]}s</span><span className="scale" aria-hidden="true">Less{[0, 1, 2, 3, 4].map((l) => <i key={l} className={"hm l" + l} />)}More</span></div><div className="weekday-bars" role="img" aria-label={"Daily average by weekday: " + weekdays.map((d, i) => d + " " + avg[i]).join(", ")}>{avg.map((v, i) => <span key={i} className={i === busy ? "busy" : ""} title={weekdays[i] + ": " + v + " on average"}><b>{i === busy ? v + " avg" : ""}</b><em><i style={{ height: v / Math.max(...avg, 1) * 100 + "%" }} /></em><small>{weekdays[i].slice(0, 3)}</small></span>)}</div></div>;
 }
 function Menu({ label, items }) {
   const [box, setBox] = React.useState(null), btn = React.useRef(), list = React.useRef();
@@ -93,7 +191,12 @@ export {
   Field,
   Icon,
   Menu,
+  Gauge,
+  Heatmap,
   Modal,
   RevenueChart,
-  StatCard
+  Ring,
+  SegmentBar,
+  StatCard,
+  TrendChart
 };

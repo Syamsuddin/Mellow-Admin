@@ -6,6 +6,19 @@ Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengiku
 
 ### Ditambahkan
 
+- Dashboard didesain ulang menjadi grid bento 12 kolom dengan sepuluh panel:
+  - kartu statistik dengan sparkline tren 8 minggu dan chip perubahan mingguan (contoh);
+  - grafik area pendapatan vs target dengan crosshair, tooltip, label ujung, dan pilihan periode 3M/6M/12M (contoh);
+  - sales funnel per tahap dengan tingkat konversi dari tahap sebelumnya;
+  - gauge setengah lingkaran target Q4: nilai won ditambah forecast tertimbang;
+  - papan peringkat pemilik deal dengan batang bertumpuk won/open;
+  - koleksi invoice: persentase tertagih dan batang tersegmentasi Paid/Pending/Overdue;
+  - heatmap keterlibatan tim per hari dengan rata-rata per hari kerja (contoh);
+  - tugas dengan cincin progres, aktivitas terbaru, tabel deal dengan batang probabilitas, dan kesehatan proyek dengan cincin progres.
+- Panel yang memakai data live mengikuti kotak filter di topbar. Grafik dan heatmap bisa dipakai dengan keyboard: fokus, lalu tombol panah.
+- Komponen baru di `src/components.jsx`: `TrendChart`, `Gauge`, `Ring`, `SegmentBar`, dan `Heatmap`. `StatCard` menerima prop opsional `trend` dan `delta`.
+- Data contoh baru di `src/data.js`: `revenue`, `trends`, `engagement`, dan `quarterTarget`.
+- Token `--series` (warna seri grafik; `--accent` di mode terang, `--accent-deep` di mode gelap) serta `--fill-success`, `--fill-warning`, dan `--fill-danger` untuk isian status pada grafik. Ketiganya sudah diperiksa terhadap buta warna di kedua mode.
 - Animasi masuk "clay pop" pada konten setiap kali halaman dibuka. Kartu statistik, panel, dan kolom kanban naik sambil membesar dengan pantulan kecil. Ikon kartu statistik memantul. Baris tabel, task, timeline, pesan, dan kartu deal bergeser dari kiri. Batang grafik tumbuh dari bawah dan progress bar terisi dari kiri. Elemen muncul berurutan dari atas ke bawah, dan seluruh animasi selesai dalam kurang dari 2 detik. Sidebar dan topbar tidak dianimasikan.
 - Jeda berurutan hanya berlaku selama 2 detik setelah pindah halaman. Elemen yang muncul sesudahnya, misalnya record baru, kartu yang dipindah, atau hasil Undo, langsung muncul dengan pop tanpa jeda.
 - Token gerak `--ease-out` dan `--ease-spring` di `src/styles.css`. Animasi otomatis mati bila pengguna mengaktifkan pengaturan "kurangi gerakan" (`prefers-reduced-motion`).
