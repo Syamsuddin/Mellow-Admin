@@ -8,6 +8,7 @@ Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengiku
 
 - Galeri README dirombak agar lebih beragam dan promotif. Bagian atas kini memakai banner hero (`hero.jpg`): Dashboard violet diapit eCommerce rose, Analytics navy gelap, dan Inbox sage gelap di layar ponsel. Galeri dibuka dengan kisi "Satu template, delapan suasana" (`themes.jpg`), yaitu Dashboard dalam 4 aksen × mode terang dan gelap, diikuti 12 screenshot halaman berbeda (Analytics, eCommerce, Deals, Inbox, Reports, Calendar, Contacts, Icon set, Advanced inputs, Lock screen, Sign in, Error 404). Tiap aksen muncul tiga kali, terang dan gelap berselang-seling. Penutupnya lima layar ponsel, termasuk menu geser yang terbuka.
 - Screenshot diambil dengan Chrome headless (1440 × 900, skala 2×, animasi dimatikan). Layar mandiri diambil pada 1152 × 720 agar kartunya lebih besar di bingkai. Nama berkas kini mengikuti pola `halaman-aksen-mode.jpg`. Lima screenshot lama yang tidak dipakai lagi dihapus.
+- `README.txt` dipangkas menjadi pengantar paket ZIP: langkah mulai, daftar isi paket, cara build ulang, batas cakupan, dan lisensi, ditambah rujukan ke `PANDUAN.html`, `README.md`, dan `CHANGELOG.md`. Daftar fitur yang mengulang `README.md` dan sudah mulai berbeda isinya dihapus. Uraian integrasi backend kini merujuk ke bagian 05 `PANDUAN.html`.
 
 ## [1.3.0] - 2026-11-03
 
