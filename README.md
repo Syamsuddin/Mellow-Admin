@@ -16,8 +16,8 @@ Cukup ekstrak lalu buka `index.html`. Tidak perlu `npm install`, server, atau ko
 
 - **Tampil beda sejak layar pertama.** Bayangan neumorphic, sentuhan kaca, animasi masuk yang membal lembut, dan 4 palet aksen lengkap memberi identitas visual yang jarang ada di template admin.
 - **Langsung jalan, bahkan offline.** React, CSS, ikon, dan font Nunito Sans sudah dibundel lokal. Tanpa CDN, font eksternal, atau panggilan API.
-- **Ada versi satu file.** `Mellow-Admin-Standalone.html` (±465 KB) memuat seluruh aplikasi dalam satu berkas HTML. Praktis untuk demo ke klien atau lampiran presentasi.
-- **Ringan.** Bundle JavaScript, termasuk React, ±97 KB setelah gzip. CSS ±46 KB gzip, sudah termasuk font yang tertanam.
+- **Ada versi satu file.** `Mellow-Admin-Standalone.html` (±510 KB) memuat seluruh aplikasi dalam satu berkas HTML. Praktis untuk demo ke klien atau lampiran presentasi.
+- **Ringan.** Bundle JavaScript, termasuk React dan enam foto kontak, ±131 KB setelah gzip. CSS ±47 KB gzip, sudah termasuk font yang tertanam.
 - **Kode yang mudah dibaca.** Hanya lima berkas sumber, React murni tanpa router, state library, atau framework CSS. Satu orang bisa memahami seluruh alurnya dalam satu sore.
 - **Siap disambungkan ke backend.** Semua perubahan data lewat beberapa fungsi pusat, jadi mengganti `localStorage` dengan API Laravel, Node, atau backend lain cukup di satu tempat.
 

@@ -4,7 +4,7 @@ await build({
   entryPoints: ['src/App.jsx'], bundle: true, minify: true,
   outfile: 'assets/app.js', format: 'iife', target: ['es2020'],
   define: { 'process.env.NODE_ENV': '"production"' }, legalComments: 'linked',
-  loader: { '.woff2': 'dataurl' }
+  loader: { '.woff2': 'dataurl', '.webp': 'dataurl' }
 });
 const html = await readFile('index.html', 'utf8');
 const css = await readFile('assets/app.css', 'utf8');

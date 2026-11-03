@@ -15,6 +15,8 @@ Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengiku
   - koleksi invoice: persentase tertagih dan batang tersegmentasi Paid/Pending/Overdue;
   - heatmap keterlibatan tim per hari dengan rata-rata per hari kerja (contoh);
   - tugas dengan cincin progres, aktivitas terbaru, tabel deal dengan batang probabilitas, dan kesehatan proyek dengan cincin progres.
+- Contacts: setiap kartu kontak kini berfoto. Foto realistis ini dibuat dengan AI dan tidak menggambarkan orang nyata. Ditambahkan kontak keenam, Arif Hidayat (Head of Digital Banking, Summit Bank). Kontak tanpa foto, misalnya yang ditambahkan pengguna, tetap memakai inisial.
+- Grid kartu kontak kini 6, 3, atau 2 kolom sesuai lebar area konten (container query; 6 kolom mulai lebar 1080 px), sehingga enam kartu selalu mengisi baris penuh. Ringkasan deal di kartu sempit tersusun ke bawah, dan tombol View contact sejajar di dasar kartu.
 - Panel yang memakai data live mengikuti kotak filter di topbar. Grafik dan heatmap bisa dipakai dengan keyboard: fokus, lalu tombol panah.
 - Semua halaman lain kini memakai tata letak penuh: kartu statistik di atas, lalu grid 12 kolom berisi panel utama dan panel insight di sisinya.
   - Reports: grafik pendapatan 3M/6M/12M, tabel laporan pipeline, deal per prioritas, perkiraan closing per minggu, nilai per pemilik, dan klien teratas.

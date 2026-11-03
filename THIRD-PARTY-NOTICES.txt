@@ -2,6 +2,9 @@ THIRD-PARTY NOTICES
 
 React, React DOM, and the Nunito Sans font are bundled locally. esbuild is a build-time tool.
 
+The contact photos in src/photos/ were generated for this template with Figma AI
+(gpt-image-2.5-flare). They depict fictional people, not real persons.
+
 react
 MIT License
 

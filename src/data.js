@@ -1,3 +1,9 @@
+import oliviaChen from "./photos/olivia-chen.webp";
+import jamesMiller from "./photos/james-miller.webp";
+import ameliaBrown from "./photos/amelia-brown.webp";
+import lucasMartin from "./photos/lucas-martin.webp";
+import sofiaWilson from "./photos/sofia-wilson.webp";
+import arifHidayat from "./photos/arif-hidayat.webp";
 const stages = ["New", "Contacted", "Proposal", "Negotiation", "Won"];
 const chances = [15, 35, 55, 75, 100];
 const seed = {
@@ -15,7 +21,7 @@ const seed = {
     [11, "Enterprise expansion", "Globex", 75e3, 4, "High", "2026-11-02", "AB"],
     [12, "Store POS integration", "Greenleaf", 26e3, 4, "Medium", "2026-11-01", "MT"]
   ].map(([id, title, company, value, stage, priority, date, owner]) => ({ id, title, company, value, stage, priority, date, owner })),
-  contacts: [{ id: 1, name: "Olivia Chen", company: "Bloom Studio", email: "olivia@example.com", role: "Creative Director" }, { id: 2, name: "James Miller", company: "Acme Corp", email: "james@example.com", role: "Product Lead" }, { id: 3, name: "Amelia Brown", company: "Northwind", email: "amelia@example.com", role: "Operations Manager" }, { id: 4, name: "Lucas Martin", company: "Globex", email: "lucas@example.com", role: "CEO" }, { id: 5, name: "Sofia Wilson", company: "Pixel & Co", email: "sofia@example.com", role: "Marketing Lead" }],
+  contacts: [{ id: 1, name: "Olivia Chen", company: "Bloom Studio", email: "olivia@example.com", role: "Creative Director" }, { id: 2, name: "James Miller", company: "Acme Corp", email: "james@example.com", role: "Product Lead" }, { id: 3, name: "Amelia Brown", company: "Northwind", email: "amelia@example.com", role: "Operations Manager" }, { id: 4, name: "Lucas Martin", company: "Globex", email: "lucas@example.com", role: "CEO" }, { id: 5, name: "Sofia Wilson", company: "Pixel & Co", email: "sofia@example.com", role: "Marketing Lead" }, { id: 6, name: "Arif Hidayat", company: "Summit Bank", email: "arif@example.com", role: "Head of Digital Banking" }],
   tasks: [{ id: 1, title: "Send proposal to Northwind", date: "2026-11-04", done: false }, { id: 2, title: "Prepare renewal presentation", date: "2026-11-06", done: false }, { id: 3, title: "Follow up with Bloom Studio", date: "2026-11-03", done: false }, { id: 4, title: "Review October performance", date: "2026-11-02", done: true }],
   invoices: [{ id: 1042, company: "Globex", amount: 75e3, date: "2026-11-02", status: "Paid" }, { id: 1041, company: "Greenleaf", amount: 26e3, date: "2026-11-01", status: "Paid" }, { id: 1040, company: "Acme Corp", amount: 24e3, date: "2026-11-07", status: "Pending" }, { id: 1039, company: "Bloom Studio", amount: 12e3, date: "2026-10-29", status: "Overdue" }],
   messages: [{ id: 1, name: "Olivia Chen", subject: "Let\u2019s bring the new brand to life", text: "Hi Mia, thank you for the proposal. We love the direction! Could we arrange a short call this week to discuss the timeline?", time: "09:41", unread: true, replies: [] }, { id: 2, name: "James Miller", subject: "Annual renewal details", text: "Hello! Please send the updated license proposal for our next review. Our team is ready to discuss the renewal.", time: "Yesterday", unread: true, replies: [] }, { id: 3, name: "Amelia Brown", subject: "CRM onboarding schedule", text: "Thanks for sharing the onboarding plan. Tuesday morning works well for the team.", time: "Monday", unread: false, replies: [] }],
@@ -43,6 +49,7 @@ const money = (n) => new Intl.NumberFormat("en-US", { style: "currency", currenc
 const short = (n) => Math.abs(n) < 1e3 ? money(n) : "$" + (n / 1e3).toLocaleString("en-US", { maximumFractionDigits: 1 }) + "K";
 const initials = (name) => name.split(/\s+/).map((s) => s[0]).slice(0, 2).join("").toUpperCase();
 const fmtDate = (date) => (/* @__PURE__ */ new Date(date + "T12:00:00")).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+const photos = { 1: oliviaChen, 2: jamesMiller, 3: ameliaBrown, 4: lucasMartin, 5: sofiaWilson, 6: arifHidayat };
 export {
   chances,
   engagement,
@@ -50,6 +57,7 @@ export {
   fmtDate,
   initials,
   money,
+  photos,
   plans,
   quarterTarget,
   receipts,
