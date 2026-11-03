@@ -7,6 +7,7 @@ Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengiku
 ### Ditambahkan
 
 - Halaman **Icon set** di kelompok UI kit, setelah Pages: 67 ikon komponen `Icon` dalam enam kategori, filter kategori dan ukuran, pencarian lewat kotak filter atas, navigasi tombol panah, pratinjau lima ukuran dan empat slot warna, salin JSX atau SVG, serta unduhan sprite `mellow-icons.svg`. Sidebar kini berisi 30 halaman, total 37 layar.
+- Badge versi (`vX.Y.Z`) di ujung kanan footer setiap halaman dashboard. Seperti label di sidebar, nilainya dibaca dari `package.json`.
 
 ### Diubah
 

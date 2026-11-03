@@ -20,7 +20,7 @@ There is no dev server, watch mode, linter, or test suite. To verify a change, r
 
 ## Releases and packaging
 
-The version lives in `package.json`. The sidebar label reads it (`import { version } from "../package.json"` in `App.jsx`; esbuild inlines only the string), so it follows automatically. Everything else is written by hand and must match: `package-lock.json` (two `version` fields), the `[Versi x.y.z](CHANGELOG.md)` badge in `README.md`, the first line of `README.txt`, the header tag and footer of `PANDUAN.html`, the first line of `QA.txt`, and a new `## [x.y.z] - date` section plus link reference in `CHANGELOG.md`. `LICENSE.txt` is the only license file (MIT, Syams Ideris).
+The version lives in `package.json`. The sidebar label and the version badge in the content footer read it (`import { version } from "../package.json"` in `App.jsx`; esbuild inlines only the string), so it follows automatically. Everything else is written by hand and must match: `package-lock.json` (two `version` fields), the `[Versi x.y.z](CHANGELOG.md)` badge in `README.md`, the first line of `README.txt`, the header tag and footer of `PANDUAN.html`, the first line of `QA.txt`, and a new `## [x.y.z] - date` section plus link reference in `CHANGELOG.md`. `LICENSE.txt` is the only license file (MIT, Syams Ideris).
 
 The distributable ZIP holds only tracked template files. It leaves out `.git`, `.gitignore`, `CLAUDE.md`, `node_modules`, and `.DS_Store`, and unpacks to one `Mellow-Admin-x.y.z/` folder next to the repo:
 
