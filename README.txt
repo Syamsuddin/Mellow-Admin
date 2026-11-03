@@ -17,6 +17,7 @@ Mellow-Admin-Standalone.html    Versi satu HTML dengan CSS dan JS tertanam
 src/App.jsx                    Halaman, state, navigasi, dan interaksi
 src/components.jsx             Komponen UI reusable
 src/pages.jsx                  Halaman tambahan dan layar mandiri (login, error)
+src/forms.jsx                  Tujuh halaman kelompok Forms
 src/data.js                    Data contoh, tahap, dan format angka
 src/styles.css                 Desain, breakpoint, tema, dan cetak
 build.mjs                      Build sumber React dan versi standalone
@@ -29,11 +30,12 @@ QA.txt                         Cakupan pemeriksaan
 CHANGELOG.md                   Riwayat perubahan per versi
 
 FITUR
-22 halaman dalam sidebar berkelompok:
+29 halaman dalam sidebar berkelompok:
 Overview: Dashboard, Analytics, eCommerce, Reports, Activity. CRM: Contacts,
 Deals, Inbox, Calendar, Tasks. Commerce: Products, Orders, Invoices.
 Workspace: Projects, Files, Team. Account: Profile, Billing, Settings, Help.
-UI kit: Components, Pages.
+UI kit: Components, Pages. Forms: Form elements, Advanced inputs,
+Form layouts, Validation, Wizard, Editors, File upload.
 7 layar mandiri tanpa sidebar: Sign in, Sign up, Forgot password, Lock screen,
 Error 404, Error 500, Maintenance. URL tak dikenal menampilkan Error 404.
 Tiap layar punya komponen dan animasi sendiri: carousel, meter kekuatan sandi,

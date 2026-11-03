@@ -6,6 +6,16 @@ Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengiku
 
 ### Ditambahkan
 
+- Kelompok menu **Forms** di sidebar dengan tujuh halaman, mengikuti pembagian bagian formulir di template admin seperti Falcon dan AdminLTE. Semua kode ada di `src/forms.jsx`:
+  - Form elements: input teks, select bergrup, datalist, multi-select, textarea berpenghitung, checkbox dengan status campuran, radio dan kartu radio, switch, range, warna, tanggal dan waktu, ukuran, input group, dan status kolom.
+  - Advanced inputs: tag input, multi-select dengan pencarian, slider dua pegangan, stepper, rating bintang, masker input dengan cek Luhn, rentang tanggal, chip pilihan, pemilih warna dengan cek kontras, dan kolom rahasia.
+  - Form layouts: vertikal, horizontal, label mengambang, inline, dan multi-kolom bersegmen dengan bilah simpan yang menempel.
+  - Validation: validasi saat keluar kolom lalu langsung saat mengetik, ringkasan galat, cek ketersediaan username, dan galat dari server.
+  - Wizard: onboarding klien empat langkah yang membuat kontak, deal, dan tugas kickoff, dengan satu tombol Undo.
+  - Editors: rich text, Markdown dengan pratinjau aman, komentar dengan @mention, dan batas karakter.
+  - File upload: drop zone dengan validasi, pratinjau, progres simulasi, foto profil, dan lampiran. Save to Files menambahkan record ke halaman Files.
+- Kelompok Forms terlipat secara bawaan untuk pengguna baru, seperti UI kit. Panel Form controls di Components punya tautan ke halaman-halaman Forms.
+- `update(key, list)` kini juga menerima fungsi, misalnya `update("tasks", (xs) => [...xs, task])`, agar timer dan Undo tidak menulis salinan data yang sudah usang.
 - Dashboard didesain ulang menjadi grid bento 12 kolom dengan sepuluh panel:
   - kartu statistik dengan sparkline tren 8 minggu dan chip perubahan mingguan (contoh);
   - grafik area pendapatan vs target dengan crosshair, tooltip, label ujung, dan pilihan periode 3M/6M/12M (contoh);

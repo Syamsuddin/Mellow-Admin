@@ -2,7 +2,7 @@
 
 **Template dashboard admin bergaya *clay & glass*: lembut di mata, siap dipakai, dan mudah dikembangkan.**
 
-React 19 · 29 layar siap pakai · Tanpa CDN atau internet · Lisensi MIT · [Versi 1.1.0](CHANGELOG.md)
+React 19 · 36 layar siap pakai · Tanpa CDN atau internet · Lisensi MIT · [Versi 1.1.0](CHANGELOG.md)
 
 ![Mellow Admin: papan kanban Sales pipeline](docs/screenshots/deals-pipeline.jpg)
 
@@ -35,7 +35,7 @@ Cukup ekstrak lalu buka `index.html`. Tidak perlu `npm install`, server, atau ko
 
 ## Fitur
 
-### 29 layar siap pakai
+### 36 layar siap pakai
 
 Sidebar dikelompokkan seperti template admin profesional:
 
@@ -47,6 +47,7 @@ Sidebar dikelompokkan seperti template admin profesional:
 | **Workspace** | Projects, Files, Team |
 | **Account** | Profile, Billing, Settings, Help |
 | **UI kit** | Components, Pages |
+| **Forms** | Form elements, Advanced inputs, Form layouts, Validation, Wizard, Editors, File upload |
 
 Ditambah **7 layar mandiri** tanpa sidebar: Sign in, Sign up, Forgot password, Lock screen, Error 404, Error 500, dan Maintenance. Alamat yang tidak dikenal otomatis menampilkan halaman 404. Setiap layar punya komponen dan animasinya sendiri: carousel dan tombol tampilkan sandi di Sign in, meter kekuatan sandi di Sign up, kode 6 digit di Forgot password, jam berjalan di Lock screen, pencarian halaman di 404, status layanan dengan coba ulang otomatis di 500, dan hitung mundur di Maintenance.
 
@@ -114,6 +115,7 @@ Setelah build, muat ulang peramban. Untuk hosting statis, unggah isi folder `dis
 src/
   App.jsx          Shell aplikasi, navigasi, state, formulir, dan 10 halaman inti
   pages.jsx        Halaman tambahan dan layar mandiri (login, error, maintenance)
+  forms.jsx        Tujuh halaman kelompok Forms (elemen, layout, validasi, wizard, editor, unggah)
   components.jsx   Komponen UI: Icon, Button, Menu, Modal, Field, StatCard, RevenueChart, ...
   data.js          Data contoh, paket harga, FAQ, dan format angka
   styles.css       Token desain, tema, animasi, breakpoint, dan gaya cetak
@@ -134,9 +136,9 @@ CHANGELOG.md       Riwayat perubahan per versi
 | Menambah aksen warna | Tambahkan nama aksen ke daftar swatch di halaman Settings (`App.jsx`) dan buat `.swatch.nama` di CSS. Lalu salin blok `[data-accent=rose]` dan `[data-theme=dark][data-accent=rose]` sebagai contoh, dan ganti semua nilainya |
 | Mengatur animasi masuk | Ubah durasi atau kurva pada aturan `enter-*` dan token `--ease-out`/`--ease-spring` di `src/styles.css`. Animasi hanya berlaku pada elemen yang tercantum di daftar selektornya, jadi jenis kartu atau baris baru perlu ditambahkan ke daftar itu agar ikut beranimasi |
 | Memakai Rupiah | Ubah helper `money` dan `short` di `src/data.js`, lalu sesuaikan nilai data contoh |
-| Menambah halaman | Tambahkan entri ke array `nav` (label, ikon, kelompok), lalu render komponennya di `App.jsx` |
+| Menambah halaman | Tambahkan entri ke array `nav` (label, ikon, kelompok), lalu render komponennya di `App.jsx`. Halaman formulir cukup ditambahkan ke daftar `forms` di `src/forms.jsx` |
 | Mengganti data contoh | Edit `seed` di `src/data.js`, build ulang, lalu klik **Settings → Reset demo data** |
-| Menerjemahkan antarmuka | Teks UI ada di `App.jsx`, `pages.jsx`, dan `components.jsx` |
+| Menerjemahkan antarmuka | Teks UI ada di `App.jsx`, `pages.jsx`, `forms.jsx`, dan `components.jsx` |
 
 ## Integrasi backend
 

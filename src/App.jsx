@@ -3,8 +3,10 @@ import { createRoot } from "react-dom/client";
 import { seed, stages, chances, money, short, initials, fmtDate, trends } from "./data";
 import { Icon, Button, Avatar, Badge, StatCard, Menu, Modal, Field } from "./components";
 import { Dashboard, Analytics, Ecommerce, Reports, Contacts, DealInsights, Inbox, Calendar, Tasks, Invoices, Products, Orders, Projects, Files, Team, Activity, Profile, Billing, Settings, Help, Components, Pages, Screen, screens } from "./pages";
+import { FormPage, forms } from "./forms";
 import "./styles.css";
-const nav = [["Dashboard", "home", "Overview"], ["Analytics", "globe", "Overview"], ["eCommerce", "bag", "Overview"], ["Reports", "chart", "Overview"], ["Activity", "activity", "Overview"], ["Contacts", "contact", "CRM"], ["Deals", "briefcase", "CRM"], ["Inbox", "message", "CRM"], ["Calendar", "calendar", "CRM"], ["Tasks", "check", "CRM"], ["Products", "box", "Commerce"], ["Orders", "cart", "Commerce"], ["Invoices", "file", "Commerce"], ["Projects", "layers", "Workspace"], ["Files", "folder", "Workspace"], ["Team", "people", "Workspace"], ["Profile", "user", "Account"], ["Billing", "card", "Account"], ["Settings", "settings", "Account"], ["Help", "help", "Account"], ["Components", "grid", "UI kit"], ["Pages", "lock", "UI kit"]];
+const nav = [["Dashboard", "home", "Overview"], ["Analytics", "globe", "Overview"], ["eCommerce", "bag", "Overview"], ["Reports", "chart", "Overview"], ["Activity", "activity", "Overview"], ["Contacts", "contact", "CRM"], ["Deals", "briefcase", "CRM"], ["Inbox", "message", "CRM"], ["Calendar", "calendar", "CRM"], ["Tasks", "check", "CRM"], ["Products", "box", "Commerce"], ["Orders", "cart", "Commerce"], ["Invoices", "file", "Commerce"], ["Projects", "layers", "Workspace"], ["Files", "folder", "Workspace"], ["Team", "people", "Workspace"], ["Profile", "user", "Account"], ["Billing", "card", "Account"], ["Settings", "settings", "Account"], ["Help", "help", "Account"], ["Components", "grid", "UI kit"], ["Pages", "lock", "UI kit"], ...forms.map(([n, icon]) => [n, icon, "Forms"])];
+const formNames = forms.map(([n]) => n);
 const slug = (n) => n.toLowerCase().replace(/\s+/g, "-");
 const routes = [...nav.map(([n]) => n), ...screens.map(([n]) => n)];
 const resolve = (hash) => routes.find((n) => slug(n) === hash) || (hash ? "Error 404" : "Dashboard");
@@ -115,7 +117,7 @@ function App() {
     });
   }
   function update(key, list) {
-    setData((d) => ({ ...d, [key]: list }));
+    setData((d) => ({ ...d, [key]: typeof list === "function" ? list(d[key]) : list }));
   }
   function log(text, kind = "record") {
     const n = /* @__PURE__ */ new Date(), pad = (x) => String(x).padStart(2, "0");
@@ -233,7 +235,7 @@ function App() {
       return <button key={label} className={"nav-item " + (page === label ? "active" : "")} aria-current={page === label ? "page" : void 0} aria-label={count ? label + ", " + count + " " + (label === "Inbox" ? "unread" : label === "Tasks" ? "open" : "pending") : label} title={rail ? label : void 0} onClick={() => go(label)}><Icon name={icon} /><span>{label}</span>{count > 0 && <b aria-hidden="true">{count}</b>}</button>;
     })}</div></div>;
   })}</nav><div className="sidebar-bottom"><span className="status-dot" /> {data.settings.workspace}<small>CLAY & GLASS EDITION • V1.1</small></div></aside>
- <main><header className="topbar"><div className="top-title"><button className="icon-btn menu-toggle" aria-label="Open navigation" onClick={() => setMenu(!menu)}><Icon name="menu" /></button><h1>{page}</h1></div>{["Settings", "Components", "Profile", "Billing", "Pages"].includes(page) ? <div className="workspace-label">{data.settings.workspace}</div> : <label className="search"><Icon name="search" size={18} /><input ref={search} placeholder={"Filter " + page.toLowerCase() + "\u2026"} aria-label={"Filter " + page.toLowerCase()} aria-keyshortcuts="/" value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => e.key === "Escape" && setQuery("")} />{query ? <button aria-label="Clear filter" onClick={() => setQuery("")}><Icon name="close" size={14} /></button> : <kbd title="Press / to filter">/</kbd>}</label>}<div className="top-actions"><div className="notification-wrap" ref={bellWrap}><button ref={bell} className="round-btn" aria-label={unread ? "Notifications, " + unread + " unread" : "Notifications"} aria-expanded={notifications} onClick={() => setNotifications(!notifications)}><Icon name="bell" />{unread > 0 && <b>{unread}</b>}</button>{notifications && <div className="notifications"><h3>Your notifications</h3>{data.messages.filter((m) => m.unread).map((m) => <button key={m.id} onClick={() => {
+ <main><header className="topbar"><div className="top-title"><button className="icon-btn menu-toggle" aria-label="Open navigation" onClick={() => setMenu(!menu)}><Icon name="menu" /></button><h1>{page}</h1></div>{["Settings", "Components", "Profile", "Billing", "Pages", ...formNames].includes(page) ? <div className="workspace-label">{data.settings.workspace}</div> : <label className="search"><Icon name="search" size={18} /><input ref={search} placeholder={"Filter " + page.toLowerCase() + "\u2026"} aria-label={"Filter " + page.toLowerCase()} aria-keyshortcuts="/" value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => e.key === "Escape" && setQuery("")} />{query ? <button aria-label="Clear filter" onClick={() => setQuery("")}><Icon name="close" size={14} /></button> : <kbd title="Press / to filter">/</kbd>}</label>}<div className="top-actions"><div className="notification-wrap" ref={bellWrap}><button ref={bell} className="round-btn" aria-label={unread ? "Notifications, " + unread + " unread" : "Notifications"} aria-expanded={notifications} onClick={() => setNotifications(!notifications)}><Icon name="bell" />{unread > 0 && <b>{unread}</b>}</button>{notifications && <div className="notifications"><h3>Your notifications</h3>{data.messages.filter((m) => m.unread).map((m) => <button key={m.id} onClick={() => {
     setActiveMessage(m.id);
     patch("messages", m.id, { unread: false });
     go("Inbox");
@@ -264,6 +266,7 @@ function App() {
  {page === "Billing" && <Billing {...ctx} />}
  {page === "Help" && <Help {...ctx} />}
  {page === "Pages" && <Pages {...ctx} />}
+ {formNames.includes(page) && <FormPage key={page} page={page} {...ctx} />}
  <footer className="content-footer"><span>mellow. <span>A softer way to work.</span></span><span>Demo workspace · Data saved in your browser</span></footer>
  </div><nav className="dock" aria-label="Quick navigation">{["Dashboard", "Contacts", "Deals", "Inbox"].map((n) => <button key={n} className={page === n ? "active" : ""} aria-current={page === n ? "page" : void 0} onClick={() => go(n)}>{n}{n === "Inbox" && unread > 0 && <b>{unread}</b>}</button>)}{creates[page] && <button className="dock-plus" aria-label={"New " + creates[page]} onClick={() => setModal({ type: creates[page] })}><Icon name="plus" size={22} /></button>}</nav>
  </main>

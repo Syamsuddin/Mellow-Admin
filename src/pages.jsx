@@ -513,14 +513,14 @@ function Help(ctx) {
  </div></>;
 }
 function Components(ctx) {
-  const { pageHead, setToast, setModal, kpis } = ctx;
+  const { pageHead, setToast, setModal, kpis, go } = ctx;
   const [seg, setSeg] = useState("Week"), [on, setOn] = useState(true);
   const months = revenue.months.slice(-6);
   return <>{pageHead("Reusable UI pieces and chart components for your next admin application.")}<div className="dash">
  <Panel span={4} title="Buttons & actions"><div className="component-row"><Button kind="primary" icon="plus" onClick={() => setToast("Primary button clicked")}>Primary</Button><Button onClick={() => setToast("Secondary button clicked")}>Secondary</Button><Button kind="subtle" onClick={() => setToast("Subtle button clicked")}>Subtle →</Button><Button kind="danger" icon="trash" onClick={() => setToast("Danger button clicked", { tone: "error" })}>Danger</Button><Button disabled>Disabled</Button></div><div className="component-row"><Menu label="Example actions" items={[["Edit", "edit", () => setToast("Edit chosen")], ["Duplicate", "layers", () => setToast("Duplicate chosen")], ["Delete", "trash", () => setToast("Delete chosen", { tone: "error" }), true]]} /><small>Action menu with keyboard support</small></div></Panel>
  <Panel span={4} title="Badges & status"><div className="component-row"><Badge tone="success">Success</Badge><Badge tone="medium">Pending</Badge><Badge tone="high">Urgent</Badge><Badge tone="low">Information</Badge><Badge>Neutral</Badge></div><div className="component-row"><Delta value={12} note="versus last week" /><Delta value={-4} note="versus last week" />{stages.map((s, i) => <span key={s} className={"stage-tag stage-" + i}><i className="dot" />{s}</span>)}</div></Panel>
  <Panel span={4} title="Avatars & tones"><div className="component-row">{["MT", "AB", "JK", "LW"].map((s, i) => <Avatar key={s} text={s} tone={i} />)}</div><div className="component-row"><span className="avatar-stack">{["MT", "AB", "JK", "LW"].map((s, i) => <Avatar key={s} text={s} tone={i} small />)}</span>{[0, 1, 2, 3].map((i) => <span key={i} className={"company-icon tone-" + i}>{"ABCD"[i]}</span>)}</div></Panel>
- <Panel span={6} title="Form controls"><div className="form-grid"><Field label="Example input" placeholder="A fresh idea…" /><Field label="Select input"><select defaultValue="Proposal"><option>New</option><option>Proposal</option><option>Won</option></select></Field></div><div className="setting-row"><span>Switch<small>Native checkbox, styled</small></span><input className="switch" type="checkbox" checked={on} onChange={(e) => setOn(e.target.checked)} /></div><div className="component-row"><Segmented label="Example period" options={["Day", "Week", "Month"]} value={seg} onChange={setSeg} /><Button onClick={() => setModal({ type: "example" })}>Open modal</Button><Button onClick={() => setToast("Everything looks good. Changes saved.")}>Show toast</Button></div></Panel>
+ <Panel span={6} title="Form controls" action={<Button kind="subtle" onClick={() => go("Form elements")}>All form pages →</Button>}><div className="form-grid"><Field label="Example input" placeholder="A fresh idea…" /><Field label="Select input"><select defaultValue="Proposal"><option>New</option><option>Proposal</option><option>Won</option></select></Field></div><div className="setting-row"><span>Switch<small>Native checkbox, styled</small></span><input className="switch" type="checkbox" checked={on} onChange={(e) => setOn(e.target.checked)} /></div><div className="component-row"><Segmented label="Example period" options={["Day", "Week", "Month"]} value={seg} onChange={setSeg} /><Button onClick={() => setModal({ type: "example" })}>Open modal</Button><Button onClick={() => setToast("Everything looks good. Changes saved.")}>Show toast</Button></div></Panel>
  <Panel span={6} title="Progress & meters"><div className="usage-rings"><div className="usage-ring"><Ring value={72} size={64} label="72% complete">72%</Ring><span><b>Ring</b><small>Accent</small></span></div><div className="usage-ring"><Ring value={91} size={64} tone="k-success" label="91% complete">91%</Ring><span><b>Ring</b><small>Success</small></span></div><div className="usage-ring"><Ring value={38} size={64} tone="k-danger" label="38% complete">38%</Ring><span><b>Ring</b><small>Danger</small></span></div></div>{[["Stage progress", 55, 2], ["Upload", 82, 3]].map(([l, v, s]) => <div className={"usage-row stage-" + s} key={l}><div><span>{l}</span><b>{v}%</b></div><div className="progress"><span style={{ width: v + "%" }} /></div></div>)}<div className="usage-row"><div><span>Segmented bar</span><b>3 parts</b></div><SegmentBar parts={[{ label: "Paid", value: 6, tone: "k-success" }, { label: "Pending", value: 3, tone: "k-warning" }, { label: "Overdue", value: 1, tone: "k-danger" }]} label="Paid 6, pending 3, overdue 1" /></div></Panel>
  </div>{kpis(true)}<div className="dash">
  <Panel span={8} title="TrendChart" sub="Multi-series line and area with crosshair tooltip"><TrendChart label="Sample revenue and target" labels={months} series={[{ label: "Target", values: revenue.target.slice(-6), tone: "k-muted" }, { label: "Revenue", values: revenue.actual.slice(-6), tone: "k-accent", area: true }]} height={240} /></Panel>
@@ -732,13 +732,23 @@ export {
   Invoices,
   Orders,
   Pages,
+  Panel,
+  Password,
   Products,
   Profile,
   Projects,
   Reports,
   Screen,
+  Segmented,
   Settings,
+  Strength,
+  Submit,
   Tasks,
   Team,
+  fileType,
+  fmtSize,
+  localDay,
+  plural,
+  rules,
   screens
 };
