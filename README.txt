@@ -1,4 +1,4 @@
-MELLOW ADMIN 1.3.0
+MELLOW ADMIN 1.3.1
 Template Dashboard Admin React, Clay & Glass Edition
 
 Baca berkas ini lebih dulu. Panduan lengkap ada di PANDUAN.html, pengenalan
