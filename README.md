@@ -4,6 +4,8 @@
 
 React 19 · 37 layar siap pakai · Tanpa CDN atau internet · Lisensi MIT · [Versi 1.2.0](CHANGELOG.md)
 
+![Mellow Admin: Dashboard dengan kartu statistik, grafik pendapatan, dan sales funnel](docs/screenshots/dashboard.jpg)
+
 ![Mellow Admin: papan kanban Sales pipeline](docs/screenshots/deals-pipeline.jpg)
 
 Mellow Admin adalah template frontend untuk aplikasi CRM, back-office, dan SaaS. Kebanyakan template admin terlihat kaku dan seragam. Mellow memakai kartu bervolume ala tanah liat (*clay*), sentuhan kaca buram (*glass*) pada dialog dan layar masuk, dan palet pastel, sehingga dashboard terasa hangat tanpa mengorbankan kepadatan informasi.
@@ -16,8 +18,8 @@ Cukup ekstrak lalu buka `index.html`. Tidak perlu `npm install`, server, atau ko
 
 - **Tampil beda sejak layar pertama.** Bayangan neumorphic, sentuhan kaca, animasi masuk yang membal lembut, dan 4 palet aksen lengkap memberi identitas visual yang jarang ada di template admin.
 - **Langsung jalan, bahkan offline.** React, CSS, ikon, dan font Nunito Sans sudah dibundel lokal. Tanpa CDN, font eksternal, atau panggilan API.
-- **Ada versi satu file.** `Mellow-Admin-Standalone.html` (±730 KB) memuat seluruh aplikasi dalam satu berkas HTML. Praktis untuk demo ke klien atau lampiran presentasi.
-- **Ringan.** Bundle JavaScript, termasuk React dan enam foto kontak, ±175 KB setelah gzip. CSS ±58 KB gzip, sudah termasuk font yang tertanam.
+- **Ada versi satu file.** `Mellow-Admin-Standalone.html` (±747 KB) memuat seluruh aplikasi dalam satu berkas HTML. Praktis untuk demo ke klien atau lampiran presentasi.
+- **Ringan.** Bundle JavaScript, termasuk React, enam foto kontak, dan foto profil, ±183 KB setelah gzip. CSS ±58 KB gzip, sudah termasuk font yang tertanam.
 - **Kode yang mudah dibaca.** Hanya enam berkas sumber, React murni tanpa router, state library, atau framework CSS. Satu orang bisa memahami seluruh alurnya dalam satu sore.
 - **Siap disambungkan ke backend.** Semua perubahan data lewat beberapa fungsi pusat, jadi mengganti `localStorage` dengan API Laravel, Node, atau backend lain cukup di satu tempat.
 
