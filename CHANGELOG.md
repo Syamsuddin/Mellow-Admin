@@ -2,6 +2,13 @@
 
 Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/), dan penomoran versinya mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
+## [Unreleased]
+
+### Diubah
+
+- Galeri README dirombak agar lebih beragam dan promotif. Bagian atas kini memakai banner hero (`hero.jpg`): Dashboard violet diapit eCommerce rose, Analytics navy gelap, dan Inbox sage gelap di layar ponsel. Galeri dibuka dengan kisi "Satu template, delapan suasana" (`themes.jpg`), yaitu Dashboard dalam 4 aksen × mode terang dan gelap, diikuti 12 screenshot halaman berbeda (Analytics, eCommerce, Deals, Inbox, Reports, Calendar, Contacts, Icon set, Advanced inputs, Lock screen, Sign in, Error 404). Tiap aksen muncul tiga kali, terang dan gelap berselang-seling. Penutupnya lima layar ponsel, termasuk menu geser yang terbuka.
+- Screenshot diambil dengan Chrome headless (1440 × 900, skala 2×, animasi dimatikan). Layar mandiri diambil pada 1152 × 720 agar kartunya lebih besar di bingkai. Nama berkas kini mengikuti pola `halaman-aksen-mode.jpg`. Lima screenshot lama yang tidak dipakai lagi dihapus.
+
 ## [1.3.0] - 2026-11-03
 
 Rilis fitur: halaman Icon set di kelompok UI kit, badge versi di footer, dan pengguna demo baru, Cut Rahma, dengan foto profil. Totalnya 37 layar. Screenshot galeri di README diambil ulang, ditambah screenshot Dashboard di bagian atas.
@@ -161,6 +168,7 @@ Rilis perbaikan UI/UX hasil audit desain, mencakup keterbacaan, navigasi, design
 
 Rilis awal: template dashboard CRM React 19 bergaya clay & glass, dengan 20 halaman, 7 layar mandiri, data demo di `localStorage`, tema gelap, empat warna aksen, ekspor CSV, dan versi standalone satu file.
 
+[Unreleased]: https://github.com/Syamsuddin/theme-mellow/compare/v1.3.0...HEAD
 [1.3.0]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.3.0
 [1.2.0]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.1.0

@@ -4,9 +4,7 @@
 
 React 19 · 37 layar siap pakai · Tanpa CDN atau internet · Lisensi MIT · [Versi 1.3.0](CHANGELOG.md)
 
-![Mellow Admin: Dashboard dengan kartu statistik, grafik pendapatan, dan sales funnel](docs/screenshots/dashboard.jpg)
-
-![Mellow Admin: papan kanban Sales pipeline](docs/screenshots/deals-pipeline.jpg)
+![Mellow Admin: Dashboard aksen violet di tengah, diapit eCommerce aksen rose dan Analytics navy gelap, dengan Inbox sage gelap di layar ponsel](docs/screenshots/hero.jpg)
 
 Mellow Admin adalah template frontend untuk aplikasi CRM, back-office, dan SaaS. Kebanyakan template admin terlihat kaku dan seragam. Mellow memakai kartu bervolume ala tanah liat (*clay*), sentuhan kaca buram (*glass*) pada dialog dan layar masuk, dan palet pastel, sehingga dashboard terasa hangat tanpa mengorbankan kepadatan informasi.
 
@@ -27,11 +25,27 @@ Cukup ekstrak lalu buka `index.html`. Tidak perlu `npm install`, server, atau ko
 
 ## Galeri
 
-| Dashboard, mode gelap, aksen navy | Billing, aksen rose |
+Semua gambar diambil langsung dari template ini dengan data demo bawaan. Aksen warna dan mode gelap bisa diganti kapan saja dari **Settings → Appearance**, tanpa memuat ulang halaman.
+
+![Dashboard yang sama dalam empat aksen warna (violet, rose, sage, navy), masing-masing dalam mode terang dan gelap](docs/screenshots/themes.jpg)
+
+| **Analytics** · navy, gelap. Trafik harian, pengunjung aktif, dan halaman teratas. | **eCommerce** · rose, terang. Penjualan, checkout funnel, dan antrean pengiriman. |
 |---|---|
-| ![Dashboard dalam mode gelap dengan aksen navy](docs/screenshots/dashboard-dark-navy.jpg) | ![Halaman Billing dengan aksen rose](docs/screenshots/billing-rose.jpg) |
-| **Sign in, aksen sage** | **Tampilan ponsel** |
-| ![Layar Sign in dengan aksen sage](docs/screenshots/sign-in-sage.jpg) | ![Halaman Deals dan Projects di layar ponsel](docs/screenshots/mobile.jpg) |
+| ![Dashboard Analytics dalam mode gelap dengan aksen navy](docs/screenshots/analytics-navy-dark.jpg) | ![Dashboard eCommerce dengan aksen rose](docs/screenshots/ecommerce-rose-light.jpg) |
+| **Deals** · violet, terang. Kanban pipeline dengan drag-and-drop dan konfeti saat deal *Won*. | **Inbox** · sage, gelap. Percakapan, balasan, dan deal terkait dalam satu layar. |
+| ![Papan kanban Deals dengan aksen violet](docs/screenshots/deals-violet-light.jpg) | ![Inbox dalam mode gelap dengan aksen sage](docs/screenshots/inbox-sage-dark.jpg) |
+| **Reports** · rose, gelap. Pendapatan bulanan dan nilai pipeline per tahap. | **Calendar** · navy, terang. Agenda, tenggat tugas, dan jadwal closing deal. |
+| ![Halaman Reports dalam mode gelap dengan aksen rose](docs/screenshots/reports-rose-dark.jpg) | ![Kalender bulanan dengan aksen navy](docs/screenshots/calendar-navy-light.jpg) |
+| **Contacts** · sage, terang. Kartu kontak berfoto dengan ringkasan deal. | **Icon set** · violet, gelap. 67 ikon dengan pratinjau ukuran dan salin JSX atau SVG. |
+| ![Kartu kontak berfoto dengan aksen sage](docs/screenshots/contacts-sage-light.jpg) | ![Halaman Icon set dalam mode gelap dengan aksen violet](docs/screenshots/icon-set-violet-dark.jpg) |
+| **Advanced inputs** · rose, terang. Tag input, slider rentang, stepper, dan rating bintang. | **Lock screen** · navy, gelap. Jam berjalan dan ringkasan selama Anda pergi. |
+| ![Halaman Advanced inputs dengan aksen rose](docs/screenshots/advanced-inputs-rose-light.jpg) | ![Lock screen dalam mode gelap dengan aksen navy](docs/screenshots/lock-screen-navy-dark.jpg) |
+| **Sign in** · sage, terang. Carousel, tombol SSO, dan tampilkan sandi. | **Error 404** · violet, gelap. Pencarian halaman dan tautan cepat. |
+| ![Layar Sign in dengan aksen sage](docs/screenshots/sign-in-sage-light.jpg) | ![Halaman Error 404 dalam mode gelap dengan aksen violet](docs/screenshots/error-404-violet-dark.jpg) |
+
+Di ponsel, sidebar berubah menjadi menu geser, navigasi utama pindah ke dock di bawah layar, dan papan kanban bisa digulir menyamping.
+
+![Lima layar ponsel: Dashboard violet, Analytics navy gelap, menu navigasi sage, Deals rose gelap, dan Calendar sage gelap](docs/screenshots/mobile.jpg)
 
 ---
 
