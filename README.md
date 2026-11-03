@@ -2,7 +2,7 @@
 
 **Template dashboard admin bergaya *clay & glass*: lembut di mata, siap dipakai, dan mudah dikembangkan.**
 
-React 19 · 37 layar siap pakai · Tanpa CDN atau internet · Lisensi MIT · [Versi 1.2.0](CHANGELOG.md)
+React 19 · 37 layar siap pakai · Tanpa CDN atau internet · Lisensi MIT · [Versi 1.3.0](CHANGELOG.md)
 
 ![Mellow Admin: Dashboard dengan kartu statistik, grafik pendapatan, dan sales funnel](docs/screenshots/dashboard.jpg)
 

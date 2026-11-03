@@ -2,7 +2,9 @@
 
 Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/), dan penomoran versinya mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
-## [Unreleased]
+## [1.3.0] - 2026-11-03
+
+Rilis fitur: halaman Icon set di kelompok UI kit, badge versi di footer, dan pengguna demo baru, Cut Rahma, dengan foto profil. Totalnya 37 layar. Screenshot galeri di README diambil ulang, ditambah screenshot Dashboard di bagian atas.
 
 ### Ditambahkan
 
@@ -159,6 +161,6 @@ Rilis perbaikan UI/UX hasil audit desain, mencakup keterbacaan, navigasi, design
 
 Rilis awal: template dashboard CRM React 19 bergaya clay & glass, dengan 20 halaman, 7 layar mandiri, data demo di `localStorage`, tema gelap, empat warna aksen, ekspor CSV, dan versi standalone satu file.
 
-[Unreleased]: https://github.com/Syamsuddin/theme-mellow/compare/v1.2.0...HEAD
+[1.3.0]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.3.0
 [1.2.0]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.1.0

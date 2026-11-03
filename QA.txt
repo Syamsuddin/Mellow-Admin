@@ -1,29 +1,40 @@
-VALIDASI MELLOW ADMIN 1.2.0
+VALIDASI MELLOW ADMIN 1.3.0
 3 November 2026 · Google Chrome 156 di macOS
 
 Berhasil:
 - Build production dengan esbuild bisa diulang: build ulang dari sumber
   menghasilkan berkas yang identik byte demi byte dengan yang ada di paket.
-- Seluruh 36 layar (29 halaman sidebar dan 7 layar mandiri) terbuka tanpa
+- Seluruh 37 layar (30 halaman sidebar dan 7 layar mandiri) terbuka tanpa
   error atau warning di konsol. Alamat yang tidak dikenal menampilkan Error 404.
 - Tidak ada geser menyamping di semua layar pada lebar 1440, 900, dan 390 px.
-- Grafik Monthly revenue di Reports (3M, 6M, 12M) tetap di dalam panel pada
-  lebar 414, 390, 360, dan 320 px, tanpa label bulan yang bertumpuk.
 - Mellow-Admin-Standalone.html berjalan tanpa memuat satu pun berkas luar.
   dist/index.html berjalan dengan folder assets miliknya.
-- Tambah deal USD 5.000 tersimpan di localStorage. Delete langsung menghapus
-  deal dan menampilkan toast Undo, dan Undo mengembalikan deal tersebut.
-- Angka seed: pipeline $258.500, forecast $126.875, Won $101.000,
-  rata-rata $29.958,33.
-- Mode gelap dengan aksen navy, aksen rose, dan tampilan ponsel tampil benar
-  (dipakai untuk screenshot galeri di docs/screenshots).
-- Tidak ada gambar yang gagal dimuat. Label versi di sidebar muat satu baris.
+- Icon set: 67 ikon tampil dalam enam kategori. Klik memilih ikon, tombol
+  panah berpindah ke ikon di kiri, kanan, atas, dan bawah. Filter atas,
+  kategori, dan ukuran menyaring dan mengubah kode. Copy JSX menyalin ke
+  clipboard lewat klik nyata, Copy SVG menghasilkan markup yang benar, dan
+  sprite berisi 67 symbol yang tergambar lewat <use>. Diuji pada lebar 1920,
+  1000, dan 390 px, dalam tema terang dan gelap.
+- Profil Cut Rahma: foto tampil di sidebar, topbar, Profile, kartu pratinjau
+  Settings, dan lock screen. My deals menampilkan 4 dari 12 deal, semuanya
+  milik CR (pipeline terbuka $120K, Won $26K).
+- Label V1.3.0 di sidebar dan badge v1.3.0 di footer terbaca dari
+  package.json. Badge sebaris dengan teks footer dan tidak tertutup dock
+  pada lebar 390 px.
+- Kartu statistik Deals untuk seluruh data contoh: pipeline $258.5K,
+  forecast $126.9K, Won $101K, rata-rata $30K.
+- Tidak ada gambar yang gagal dimuat. Screenshot galeri di docs/screenshots
+  diambil dari tampilan 1.3.0.
 
 Batas pemeriksaan:
 - Tidak diuji pada perangkat fisik Android/iOS atau peramban Safari/Firefox.
   Lebar ponsel diuji lewat iframe di Chrome desktop.
-- Drag-and-drop kanban memakai HTML5 native dan tidak diuji pada pemeriksaan ini.
-- Halaman Forms (wizard, validasi, editor, unggah) diperiksa tampil tanpa error,
-  tetapi alurnya belum diuji langkah demi langkah.
+- Label versi di sidebar muat satu baris pada lebar 1300 px ke atas. Pada
+  1001-1250 px label turun ke dua baris, sama seperti di 1.2.0.
+- Tambah, hapus, dan Undo deal, drag-and-drop kanban, serta alur halaman
+  Forms tidak diuji ulang langkah demi langkah pada rilis ini. Kodenya tidak
+  berubah sejak 1.2.0 selain nama pemilik, contoh isian, dan fungsi salin
+  yang dipindah ke pages.jsx. Halaman-halaman itu terbuka tanpa error.
+- Tombol salin hanya diuji lewat http://127.0.0.1, tidak lewat file://.
 - Tidak ada backend, email nyata, atau pembayaran eksternal untuk diuji.
 - Grafik historis adalah ilustrasi, bukan hasil agregasi dari invoice.

@@ -1,4 +1,4 @@
-MELLOW ADMIN 1.2.0
+MELLOW ADMIN 1.3.0
 Template Dashboard Admin, Clay & Glass Edition
 
 MULAI
