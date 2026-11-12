@@ -1,6 +1,6 @@
 {
   "name": "mellow-clay-admin",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "description": "Offline-ready React admin template with clay and glass styling",
   "directories": {
     "doc": "docs"

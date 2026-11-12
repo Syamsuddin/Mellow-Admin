@@ -1,43 +1,42 @@
-VALIDASI MELLOW ADMIN 1.3.2
+VALIDASI MELLOW ADMIN 1.4.0
 12 November 2026 · Google Chrome 157 di macOS
 
-Rilis tampilan. Di src/ hanya styles.css yang berubah: tabel padat (padding
-sel, tombol dan select di dalam sel, margin tepi isi sel). Selain itu hanya
-nomor versi.
+Rilis tata letak. Di src/ yang berubah hanya styles.css (konten padat dan
+kelas cell-wrap) serta satu sel tabel Catalog di pages.jsx. Selain itu
+hanya nomor versi.
 
 Berhasil:
 - npm run build berhasil. Berkas hasil build yang berubah hanya app.css,
   app.js (nomor versi), dan Mellow-Admin-Standalone.html. Ukuran: standalone
-  ±747 KB, app.js ±184 KB gzip, app.css ±59 KB gzip.
-- Ke-16 tabel di 13 halaman (Dashboard, Analytics, eCommerce, Reports,
-  Contacts, Deals, Products, Orders, Invoices, Files, Team, Profile, Billing)
-  diukur sebelum dan sesudah pada lebar 1440 px:
-    baris berteks                        49 -> 33 px
-    baris dengan sel utama dua baris     69 -> 53 px
-    baris bertombol (Invoices, Team)     72 -> 53 px
-    baris ber-select (Orders)            69 -> 45 px
-    baris ber-avatar (Contacts)          58 -> 42 px
-    judul kolom                          40 -> 32 px
-    tfoot (Analytics, Reports)        48-49 -> 32-33 px
-- Tombol di dalam sel setinggi 26 px dan select 28 px, keduanya di atas
-  target sentuh 24 px.
-- Pemeriksaan visual di Team, Invoices, Orders, Dashboard, dan Analytics:
-  tidak ada isi sel yang terpotong atau bertumpuk.
+  ±748 KB, app.js ±184 KB gzip, app.css ±59 KB gzip.
+- Tinggi 30 halaman sidebar diukur sebelum dan sesudah pada lebar 1440 px.
+  Semua memendek, total 52.130 -> 48.232 px (-7%). Terbesar: Projects -23%,
+  Help -14%, File upload -12%, Components -11%, Wizard -10%.
+- Tidak ada geser menyamping di 30 halaman sidebar dan 7 layar mandiri pada
+  lebar 1440, 900, dan 390 px. Lebar 900 dan 390 px diuji lewat iframe
+  selebar itu di Chrome desktop. Topbar ponsel tetap 118 px.
+- Tabel Catalog (Products) tidak lagi bergulir ke samping di 1440 px berkat
+  cell-wrap pada kolom Product (luber 52 px -> 0). Luber tabel Contacts
+  1 px -> 0.
+- Pemeriksaan visual di Dashboard, Projects, Help, Products, dan Dashboard
+  pada 390 px: tidak ada isi yang terpotong atau bertumpuk.
 - Mellow-Admin-Standalone.html tidak memuat satu pun berkas luar.
   dist/index.html hanya memuat app.css, app.js, dan favicon.svg dari folder
-  assets miliknya. Keduanya menampilkan tabel padat.
-- Label V1.3.2 di sidebar dan badge v1.3.2 di footer terbaca dari
+  assets miliknya. dist menampilkan 12 kartu deal tanpa error.
+- Label V1.4.0 di sidebar dan badge v1.4.0 di footer terbaca dari
   package.json, di index.html, standalone, dan dist.
 
 Batas pemeriksaan:
-- Hanya diuji pada lebar 1440 px dengan aksen violet mode terang. Lebar 900
-  dan 390 px, mode gelap, serta aksen lain tidak diperiksa ulang. Perubahan
-  hanya padding vertikal; padding horizontal, warna, dan breakpoint tetap.
-- Screenshot galeri README belum diambil ulang dan masih menampilkan tabel
-  serta label 1.3.1.
+- Tabel Members (Team) masih bergulir 52 px ke samping di 1440 px (73 px di
+  1.3.2). Isinya tidak bisa dibungkus (email, select peran, bilah progres),
+  jadi cell-wrap tidak membantu di sana.
+- Mode gelap dan aksen selain violet tidak diperiksa ulang. Perubahan hanya
+  jarak dan padding, tidak menyentuh warna.
+- Screenshot galeri README belum diambil ulang dan masih menampilkan
+  tampilan dan label 1.3.1.
 - Interaksi (tambah, hapus, dan Undo record, drag-and-drop kanban, alur
-  Forms, Icon set) tidak diuji ulang karena JavaScript-nya sama dengan 1.3.1
-  selain nomor versi.
+  Forms, Icon set) tidak diuji ulang karena JavaScript-nya sama dengan 1.3.2
+  selain nomor versi dan satu atribut kelas.
 - Tidak diuji pada perangkat fisik Android/iOS atau peramban Safari/Firefox.
 - Tidak ada backend, email nyata, atau pembayaran eksternal untuk diuji.
 - Grafik historis adalah ilustrasi, bukan hasil agregasi dari invoice.

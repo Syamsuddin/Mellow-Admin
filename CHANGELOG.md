@@ -2,6 +2,25 @@
 
 Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/), dan penomoran versinya mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
+## [1.4.0] - 2026-11-12
+
+Rilis tata letak: seluruh area konten dipadatkan agar ruang terpakai optimal, dan ada kelas utilitas baru untuk kolom tabel berteks panjang. Di `src/` hanya `styles.css` dan satu sel tabel di `pages.jsx` yang berubah selain nomor versi, jadi data demo yang tersimpan di browser tetap terbaca tanpa reset. Total tinggi 30 halaman sidebar pada lebar 1440 px turun 7% (52.130 menjadi 48.232 px); Projects turun 23%, Help 14%, File upload 12%. Screenshot galeri README belum diambil ulang dan masih menampilkan tampilan 1.3.1.
+
+### Ditambahkan
+
+- Kelas `cell-wrap` untuk sel tabel berteks panjang: teks turun ke baris berikutnya (lebar minimum 140 px) sehingga tabel tidak melebar melewati panel. `cell-wrap wide` memberi kolom terpanjang lebar minimum 308 px. Kolom Product di tabel Catalog (Products) memakainya, sehingga tabel itu tidak lagi bergulir ke samping di lebar 1440 px.
+
+### Diubah
+
+- Topbar desktop dari 78 px menjadi 64 px. Padding kiri-kanan topbar dan konten menjadi 24 px di semua lebar desktop (sebelumnya 32 px, dan 40 px mulai 1600 px). Tampilan ponsel tidak berubah.
+- Panel berpadding 20 px (sebelumnya 24 px, sama dengan tampilan ponsel); `.form-actions` mengikuti dengan margin negatif 20 px.
+- Jarak di antara blok menjadi 16 px: margin bawah panel, kartu statistik, dan grid `.dash`; gap `.dash`, `.stack`, `.grid-2`, `.contact-grid`, dan `.card-grid`; kepala panel ke isinya; bilah filter; grid formulir; bagian formulir; ringkasan galat; serta jarak ke footer konten.
+- Kartu statistik tanpa tinggi minimum dan berpadding 12 px di semua lebar (sebelumnya minimal 96 px dengan padding 20 × 16 px).
+- `.info-list` lebih rapat (baris berpadding 8 px). Pada daftar label–nilai yang diawali label tanpa ikon (`<li><span>Label</span><b>Nilai</b></li>`), nilai kini menempel ke kolom label alih-alih terlempar ke tepi kanan panel lebar. Daftar berikon bawaan template tetap rata kanan.
+- State kosong berpadding 24 × 16 px (sebelumnya 48 × 20 px); `.center-actions` 16 px di atas.
+- Subjudul halaman (`.page-head p`) tidak lagi dibatasi lebar 640 px.
+- Item `.grid-2` boleh menyusut (`min-width: 0`), agar select beropsi panjang tidak mendorong panel sebelah keluar layar.
+
 ## [1.3.2] - 2026-11-12
 
 Rilis tampilan: tabel kini padat, tinggi baris mengikuti tinggi isinya. Di `src/` hanya `styles.css` yang berubah selain nomor versi, jadi data demo yang tersimpan di browser tetap terbaca tanpa reset. Screenshot galeri README belum diambil ulang dan masih menampilkan tabel serta label 1.3.1.
@@ -182,6 +201,7 @@ Rilis perbaikan UI/UX hasil audit desain, mencakup keterbacaan, navigasi, design
 
 Rilis awal: template dashboard CRM React 19 bergaya clay & glass, dengan 20 halaman, 7 layar mandiri, data demo di `localStorage`, tema gelap, empat warna aksen, ekspor CSV, dan versi standalone satu file.
 
+[1.4.0]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.4.0
 [1.3.2]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.3.2
 [1.3.1]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.3.1
 [1.3.0]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.3.0
