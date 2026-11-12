@@ -2,6 +2,17 @@
 
 Semua perubahan penting pada Mellow Admin dicatat di file ini. Formatnya mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/), dan penomoran versinya mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
+## [1.3.2] - 2026-11-12
+
+Rilis tampilan: tabel kini padat, tinggi baris mengikuti tinggi isinya. Di `src/` hanya `styles.css` yang berubah selain nomor versi, jadi data demo yang tersimpan di browser tetap terbaca tanpa reset. Screenshot galeri README belum diambil ulang dan masih menampilkan tabel serta label 1.3.1.
+
+### Diubah
+
+- Padding sel tabel (`td` dan `tfoot td`) turun dari 16 px menjadi 8 px atas-bawah, dan judul kolom (`th`) dari 12 px menjadi 8 px. Baris berteks turun dari 49 px menjadi 33 px, baris dengan sel utama dua baris dari 69 px menjadi 53 px, judul kolom dari 40 px menjadi 32 px.
+- Tombol (`.btn`) di dalam sel tidak lagi memakai `min-height` 39 px. Paddingnya 4 × 12 px, sehingga tingginya 26 px: mendekati badge dan tetap memenuhi target sentuh 24 px. Baris Invoices dan Team turun dari 72 px menjadi 53 px.
+- `select` di dalam sel, termasuk `.status-select`, memakai padding vertikal 4 px (tinggi 28 px). Baris Orders turun dari 69 px menjadi 45 px.
+- Margin atas anak pertama dan margin bawah anak terakhir di dalam sel dinolkan, agar margin komponen tidak menambah tinggi baris.
+
 ## [1.3.1] - 2026-11-03
 
 Rilis dokumentasi: galeri README yang lebih beragam dan promotif, serta `README.txt` yang diringkas menjadi pengantar paket ZIP. Kode aplikasi tidak berubah selain nomor versi, jadi data demo yang tersimpan di browser tetap terbaca tanpa reset.
@@ -171,6 +182,7 @@ Rilis perbaikan UI/UX hasil audit desain, mencakup keterbacaan, navigasi, design
 
 Rilis awal: template dashboard CRM React 19 bergaya clay & glass, dengan 20 halaman, 7 layar mandiri, data demo di `localStorage`, tema gelap, empat warna aksen, ekspor CSV, dan versi standalone satu file.
 
+[1.3.2]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.3.2
 [1.3.1]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.3.1
 [1.3.0]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.3.0
 [1.2.0]: https://github.com/Syamsuddin/theme-mellow/releases/tag/v1.2.0

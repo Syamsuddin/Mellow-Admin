@@ -1,34 +1,43 @@
-VALIDASI MELLOW ADMIN 1.3.1
-3 November 2026 · Google Chrome 156 di macOS
+VALIDASI MELLOW ADMIN 1.3.2
+12 November 2026 · Google Chrome 157 di macOS
 
-Rilis dokumentasi. Kode di src/ tidak berubah sejak 1.3.0; yang berubah
-hanya nomor versi, galeri README, dan README.txt.
+Rilis tampilan. Di src/ hanya styles.css yang berubah: tabel padat (padding
+sel, tombol dan select di dalam sel, margin tepi isi sel). Selain itu hanya
+nomor versi.
 
 Berhasil:
-- Build production dengan esbuild bisa diulang: build ulang dari sumber
-  menghasilkan berkas yang identik byte demi byte dengan yang ada di paket.
-  Ukuran tetap: standalone ±747 KB, app.js ±183 KB gzip, app.css ±58 KB gzip.
-- Seluruh 37 layar (30 halaman sidebar dan 7 layar mandiri) terbuka tanpa
-  error atau warning di konsol pada lebar 1440, 900, dan 390 px. Alamat yang
-  tidak dikenal menampilkan Error 404.
-- Tidak ada geser menyamping di semua layar pada ketiga lebar itu.
-- Mellow-Admin-Standalone.html berjalan tanpa memuat satu pun berkas luar.
+- npm run build berhasil. Berkas hasil build yang berubah hanya app.css,
+  app.js (nomor versi), dan Mellow-Admin-Standalone.html. Ukuran: standalone
+  ±747 KB, app.js ±184 KB gzip, app.css ±59 KB gzip.
+- Ke-16 tabel di 13 halaman (Dashboard, Analytics, eCommerce, Reports,
+  Contacts, Deals, Products, Orders, Invoices, Files, Team, Profile, Billing)
+  diukur sebelum dan sesudah pada lebar 1440 px:
+    baris berteks                        49 -> 33 px
+    baris dengan sel utama dua baris     69 -> 53 px
+    baris bertombol (Invoices, Team)     72 -> 53 px
+    baris ber-select (Orders)            69 -> 45 px
+    baris ber-avatar (Contacts)          58 -> 42 px
+    judul kolom                          40 -> 32 px
+    tfoot (Analytics, Reports)        48-49 -> 32-33 px
+- Tombol di dalam sel setinggi 26 px dan select 28 px, keduanya di atas
+  target sentuh 24 px.
+- Pemeriksaan visual di Team, Invoices, Orders, Dashboard, dan Analytics:
+  tidak ada isi sel yang terpotong atau bertumpuk.
+- Mellow-Admin-Standalone.html tidak memuat satu pun berkas luar.
   dist/index.html hanya memuat app.css, app.js, dan favicon.svg dari folder
-  assets miliknya. Keduanya menampilkan 12 kartu deal tanpa error.
-- Label V1.3.1 di sidebar dan badge v1.3.1 di footer terbaca dari
-  package.json.
-- README.md merujuk 15 gambar di docs/screenshots dan semuanya ada. Seluruh
-  screenshot diambil dari tampilan 1.3.1, dengan keempat aksen dalam mode
-  terang dan gelap.
-- README.txt: semua baris maksimal 80 karakter, kolom daftar isi paket rata.
+  assets miliknya. Keduanya menampilkan tabel padat.
+- Label V1.3.2 di sidebar dan badge v1.3.2 di footer terbaca dari
+  package.json, di index.html, standalone, dan dist.
 
 Batas pemeriksaan:
-- Tidak diuji pada perangkat fisik Android/iOS atau peramban Safari/Firefox.
-  Lebar 390 px diuji sebagai viewport Chrome desktop.
+- Hanya diuji pada lebar 1440 px dengan aksen violet mode terang. Lebar 900
+  dan 390 px, mode gelap, serta aksen lain tidak diperiksa ulang. Perubahan
+  hanya padding vertikal; padding horizontal, warna, dan breakpoint tetap.
+- Screenshot galeri README belum diambil ulang dan masih menampilkan tabel
+  serta label 1.3.1.
 - Interaksi (tambah, hapus, dan Undo record, drag-and-drop kanban, alur
-  Forms, Icon set) tidak diuji ulang langkah demi langkah pada rilis ini
-  karena kodenya sama dengan 1.3.0. Hasil uji interaksi 1.3.0 tetap berlaku.
-- Label versi di sidebar turun ke dua baris pada 1001-1250 px, sama seperti
-  di 1.3.0.
+  Forms, Icon set) tidak diuji ulang karena JavaScript-nya sama dengan 1.3.1
+  selain nomor versi.
+- Tidak diuji pada perangkat fisik Android/iOS atau peramban Safari/Firefox.
 - Tidak ada backend, email nyata, atau pembayaran eksternal untuk diuji.
 - Grafik historis adalah ilustrasi, bukan hasil agregasi dari invoice.

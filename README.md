@@ -2,7 +2,7 @@
 
 **Template dashboard admin bergaya *clay & glass*: lembut di mata, siap dipakai, dan mudah dikembangkan.**
 
-React 19 · 37 layar siap pakai · Tanpa CDN atau internet · Lisensi MIT · [Versi 1.3.1](CHANGELOG.md)
+React 19 · 37 layar siap pakai · Tanpa CDN atau internet · Lisensi MIT · [Versi 1.3.2](CHANGELOG.md)
 
 ![Mellow Admin: Dashboard aksen violet di tengah, diapit eCommerce aksen rose dan Analytics navy gelap, dengan Inbox sage gelap di layar ponsel](docs/screenshots/hero.jpg)
 
